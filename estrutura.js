@@ -39,7 +39,7 @@ function atualizar_status(){
 		
 }
 
-function remover_link(){
+function remover_vertice(){
 	var vertice = document.getElementById("verticedeletetext").value;
 
 	/*remover os links que chegam no vertice a ser deletado*/	
@@ -56,5 +56,18 @@ function remover_link(){
 }
 
 function remover_link(){
-
+	var origem = document.getElementById("linkdelete1text").value;
+	var destino = document.getElementById("linkdelete2text").value;
+	
+	var i=0;
+	var linksarray = grafos[origem].linkpara;
+	for(i=0; i < grafos[origem].numlinks; i++){
+		if(linksarray[i].nome == destino){
+			linksarray.splice(i, 1);
+			grafos[origem].numlinks--;
+			i--;
+		}
+	}
+	
+	atualizar_status();
 }
