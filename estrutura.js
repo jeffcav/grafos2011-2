@@ -38,3 +38,23 @@ function atualizar_status(){
 	}
 		
 }
+
+function remover_link(){
+	var vertice = document.getElementById("verticedeletetext").value;
+
+	/*remover os links que chegam no vertice a ser deletado*/	
+	for(v in grafos){
+		
+	}
+
+	/*remover os links que partem do vertice a ser deletado*/
+	var numlinks = 	grafos[vertice].numlinks;
+	grafos[vertice].linkpara.splice(0, numlinks); //provavelmente desnecessário
+	grafos.splice(vertice, 1);
+
+	atualizar_status();
+}
+
+function remover_link(){
+
+}
