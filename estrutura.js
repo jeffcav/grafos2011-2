@@ -102,6 +102,7 @@ function atualizar_status(){
 		for(j=0; j < grafos[i].numlinks; j++){
 			//document.getElementById("statusdiv").innerHTML += " -> " + grafos[i].linkpara[j].nome;
 			context.lineTo(grafos[grafos[i].linkpara[j].nome].posx - 10, grafos[grafos[i].linkpara[j].nome].posy - 102);
+			context.moveTo(grafos[i].posx - 10, grafos[i].posy - 102);
 			context.stroke();
 			
 		}
