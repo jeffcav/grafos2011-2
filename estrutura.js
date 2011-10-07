@@ -46,6 +46,13 @@ function onMouseDown(e){ // o ideal seria que o inserir vertices chamasse essa f
 				}	
 			}
 		}
+		if( action == 3){ //criar link
+			for(j=0; j < numVertices; j++){
+				if( e.clientX > grafos[j].posx - 20 && e.clientX < grafos[j].posx + 20 && e.clientY > grafos[j].posy - 20 && e.clientY < grafos[j].posy + 20 ){
+					actNode = j;
+				}	
+			}
+		}
 	}
 }
 
@@ -54,25 +61,43 @@ function onMouseMove(e){ // o ideal seria que o inserir vertices chamasse essa f
 		grafos[actNode].posx = e.clientX;
 		grafos[actNode].posy = e.clientY;
 		atualizar_status();
+	}else if(action == 3 && actNode < 9999 ){
+		atualizar_status();
+		var context = document.getElementById("area").getContext("2d");
+		context.beginPath();
+		context.moveTo(grafos[actNode].posx - 10, grafos[actNode].posy - 102);
+		context.lineTo(e.clientX - 10, e.clientY - 102);
+		context.stroke();
+		context.closePath();
+		
+		
 	}
 }
 
 function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa função que 
 	if(action == 0 && actNode < 9999 ){
 		actNode = 9999;
+	}else if(action == 3 && actNode < 9999 ){
+		var origem = actNode;
+		for(j=0; j < numVertices; j++){
+			if( e.clientX > grafos[j].posx - 20 && e.clientX < grafos[j].posx + 20 && e.clientY > grafos[j].posy - 20 && e.clientY < grafos[j].posy + 20 ){
+					var destino = j;
+					var i_link = grafos[origem].numlinks;
+					grafos[origem].linkpara[i_link] = grafos[destino];
+					grafos[origem].numlinks++;
+					atualizar_status();
+			}	
+		}
+		action = 0;
+		actNode = 9999;		
+		
 	}
 }
 
 
+
 function inserir_link(){
-	var origem = document.getElementById("linkvertice1text").value;
-	var destino = document.getElementById("linkvertice2text").value;
-	var i_link = grafos[origem].numlinks;
-	
-	grafos[origem].linkpara[i_link] = grafos[destino];
-	grafos[origem].numlinks++;
-	
-	atualizar_status();
+	action = 3;
 }
 
 
@@ -84,10 +109,8 @@ function inserir_vertice(){
 function atualizar_status(){
 	//document.getElementById("statusdiv").innerHTML = "";
 	var context = document.getElementById("area").getContext("2d");
-	//context.beginPath();
 	context.fillStyle = "aaaaaa";
 	context.fillRect( 0, 0, 500, 500);
-	//context.closePath();
 	context.lineWidth = 5;
 	context.font = "12px serif";
 	var i = 0;
@@ -97,12 +120,14 @@ function atualizar_status(){
 		context.fillStyle = "000000";
 		context.arc(grafos[i].posx - 10, grafos[i].posy - 102, 20, (Math.PI/180)*0, (Math.PI/180)*360, false); //
 		context.fill();
+		context.stroke()
 		context.moveTo(grafos[i].posx - 10, grafos[i].posy - 102);
 		var j;
 		for(j=0; j < grafos[i].numlinks; j++){
 			//document.getElementById("statusdiv").innerHTML += " -> " + grafos[i].linkpara[j].nome;
 			context.lineTo(grafos[grafos[i].linkpara[j].nome].posx - 10, grafos[grafos[i].linkpara[j].nome].posy - 102);
 			context.moveTo(grafos[i].posx - 10, grafos[i].posy - 102);
+			context.fill();
 			context.stroke();
 			
 		}
