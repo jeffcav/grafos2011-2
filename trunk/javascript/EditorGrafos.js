@@ -8,25 +8,117 @@ var yCanvas = 0;
 var larguraCanvas = 500;
 var alturaCanvas = 500;
 var acao;
+var actNode = null;
 var vertice = new Array();
-var acoes = { "inserirVertice":0, "deletarVertice":1, "inserirAresta":2, "deletarAresta":3 };	
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4 };	
 	
 /* Referencia aos botões */
 var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deleteVertice" );
+var criarArestaButton = document.getElementById("ligaVertice");
+var moverButton = document.getElementById("mover");
 
 /* Constantes */
 const descCanvasX = 10;
-const descCanvasY = 83;
+const descCanvasY = 104;
 
 /* Escutas de eventos */
 window.addEventListener( 'load', atualizarCanvas, false );
-window.addEventListener( 'load', exibirPosMouse, false );
+window.addEventListener( 'load', mouseMove, false );
 
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
+criarArestaButton.addEventListener( 'click', inserirAresta, false );
+moverButton.addEventListener( 'click', mover, false );
 
 canvas.addEventListener( 'click', verificarAcao, false );
-canvas.addEventListener( 'mousemove', exibirPosMouse, false );
+canvas.addEventListener( 'mousemove', mouseMove, false );
+window.addEventListener( 'mousedown', onMouseDown, false);
+window.addEventListener( 'mouseup', onMouseUp, false);
+
+function desenhar_aresta(ox, oy, dx, dy){
+	var disx = ox - dx;
+	var disy = oy - dy;
+	if(disx >= 0 && disy >= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = -disy/disx;
+			disx = -1;
+					
+		} else {
+			disx = -disx/disy;
+			disy = -1;	
+		}
+	} else if(disx >= 0 && disy <= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = -disy/disx;
+			disx = -1;
+					
+		} else {
+			disx = disx/disy;
+			disy = 1;	
+		}				
+	}else if(disx <= 0 && disy >= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = disy/disx;
+			disx = 1;
+					
+		} else {
+			disx = -disx/disy;
+			disy = -1;	
+		}
+	}else{
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = disy/disx;
+			disx = 1;
+					
+		} else {
+			disx = disx/disy;
+			disy = 1;	
+		}
+	}
+	
+	contexto.beginPath();
+	contexto.lineWidth = 3;
+	contexto.moveTo(ox - 10, oy - 102);
+	contexto.lineTo(dx - 10 - disx*29, dy - 102 - disy*29);
+	contexto.stroke();
+	contexto.closePath();
+
+	contexto.beginPath();
+	contexto.lineWidth = 15;
+	contexto.moveTo(dx - 10 - disx*30, dy - 102 - disy*30);
+	contexto.lineTo(dx - 10 - disx*27, dy - 102 - disy*27);
+	contexto.stroke();
+	contexto.closePath();
+
+	contexto.beginPath();
+	contexto.lineWidth = 12;
+	contexto.moveTo(dx - 10 - disx*28, dy - 102 - disy*28);
+	contexto.lineTo(dx - 10 - disx*24, dy - 102 - disy*24);
+	contexto.stroke();
+	contexto.closePath();			
+
+	contexto.beginPath();
+	contexto.lineWidth = 9;
+	contexto.moveTo(dx - 10 - disx*25, dy - 102 - disy*25);
+	contexto.lineTo(dx - 10 - disx*21, dy - 102 - disy*21);
+	contexto.stroke();
+	contexto.closePath();
+	
+	contexto.beginPath();
+	contexto.lineWidth = 6;
+	contexto.moveTo(dx - 10 - disx*22, dy - 102 - disy*22);
+	contexto.lineTo(dx - 10 - disx*18, dy - 102 - disy*18);
+	contexto.stroke();
+	contexto.closePath();
+
+	contexto.beginPath();
+	contexto.lineWidth = 3;
+	contexto.moveTo(dx - 10 - disx*19, dy - 102 - disy*19);
+	contexto.lineTo(dx - 10 - disx*10, dy - 102 - disy*10);
+	contexto.stroke();
+	contexto.closePath();
+
+}
 
 function atualizarCanvas( e ) 
 {				
@@ -45,9 +137,13 @@ function atualizarCanvas( e )
 		var j;
 		for( j = 0; j < numArestas; j++ )
 		{
-			desenharAresta( vertice[i], j );
-		}		
-		
+			desenhar_aresta( vertice[i].x, vertice[i].y, vertice[i].aresta[j].x, vertice[i].aresta[j].y );
+		}
+		contexto.beginPath();
+		contexto.fillStyle = "FFFFFF";	
+		var ajusteX = 12;	//configurar ajustes de forma correta (número com mais de um dígito )
+		contexto.fillText( vertice[i].valor, vertice[i].x - ajusteX, vertice[i].y + 4 - descCanvasY );
+		contexto.closePath();
 	}
 }
 
@@ -59,20 +155,19 @@ function desenharVertice( v )
 	var raio = 20;
 	contexto.arc( v.x - descCanvasX, v.y - descCanvasY, raio, piRadiando*0, piRadiando*360, false ); 
 	contexto.fill();
-	contexto.fillStyle = "FFFFFF";	
-	var ajusteX = 13;	//configurar ajustes de forma correta (número com mais de um dígito )
-	var ajusteY = 80;
-	contexto.fillText( v.valor, v.x - ajusteX, v.y - ajusteY );
+	contexto.stroke();
 	contexto.closePath();
 			
 }
 
 function desenharAresta( v, indiceAresta )
 {
-	var verticeDestino = v[i].aresta[ indiceAresta ];
+	//contexto.beginPath();
+	var verticeDestino = v.aresta[ indiceAresta ];
 	contexto.lineTo( verticeDestino.x - descCanvasX, verticeDestino.y - descCanvasY );
-	contexto.moveTo( v[i].x - descCanvasX, v[i].y - descCanvasY );
-	contexto.stroke();			
+	contexto.moveTo( v.x - descCanvasX, v.y - descCanvasY );
+	contexto.stroke();
+	//contexto.closePath();			
 }
 
 function desenharFundoCanvas()
@@ -80,7 +175,7 @@ function desenharFundoCanvas()
 
 	contexto.fillStyle = "aaaaaa";
 	contexto.fillRect( xCanvas, yCanvas, alturaCanvas, larguraCanvas );		
-	contexto.lineWidth = 5;
+	contexto.lineWidth = 3;
 	contexto.font = "12px serif";
 	
 	contexto.fill();
@@ -92,25 +187,31 @@ function inserirVertice()
 	acao = acoes.inserirVertice;
 }
 
+function inserirAresta(){
+	acao = acoes.inserirAresta;
+}
+
+function mover(){
+	acao = acoes.move;
+}
+
 function verificarAcao( e )
 {
 	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
 	{
 
 		switch( acao )
-		{
+		{	
 		case acoes.inserirVertice:
 			var tamVertice = vertice.length;
 			var valor = window.prompt( "Digite o valor do vertice", "" );	// checar se valor é válido e se já existe
 			vertice[ tamVertice ] = new Vertice( valor, e.clientX, e.clientY );			
 			atualizarCanvas();
+			//acao = acoes.move;
 			break;
 
 		case acoes.deletarVertice: 		
 			break;	
-
-		case acoes.inserirAresta:
-			break;
 
 		case acoes.deletarAresta:
 			break;
@@ -119,8 +220,103 @@ function verificarAcao( e )
 	}
 }
 
-function exibirPosMouse( e )
+function onMouseDown( e )
+{
+	var numVertices = vertice.length;
+	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	{
+
+		switch( acao )
+		{
+		case acoes.move:
+			for(j=0; j < numVertices; j++){
+				if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+					actNode = j;
+				}	
+			}
+			break;
+
+		case acoes.inserirAresta:
+			for(j=0; j < numVertices; j++){
+				if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+					actNode = j;
+				}	
+			}			
+			break;
+		
+		}
+	}
+}
+
+function mouseMove( e )
 {
 	posXY.innerHTML = 'Pos X = ' + e.clientX + "<br />";	
 	posXY.innerHTML += 'Pos Y = ' + e.clientY + "<br />";
+	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	{
+
+		switch( acao )
+		{
+		case acoes.move:
+			if(actNode != null)
+			{
+				vertice[actNode].x = e.clientX;
+				vertice[actNode].y = e.clientY;
+				atualizarCanvas();
+			}
+			break;
+
+		case acoes.inserirAresta:
+			if(actNode != null)
+			{
+				
+				contexto.beginPath();
+				contexto.moveTo(vertice[actNode].x - descCanvasX, vertice[actNode].y - descCanvasY);
+				contexto.lineTo(e.clientX - 10, e.clientY - 102);
+				contexto.stroke();
+				contexto.closePath();
+				atualizarCanvas();
+						
+			}
+			break;
+		
+		}
+	}
+}
+
+function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa função que 
+	
+	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	{
+
+		switch( acao )
+		{
+		case acoes.move:
+			if(actNode != null)
+			{
+				actNode = null;
+			}
+			atualizarCanvas();
+			break;
+
+		case acoes.inserirAresta:
+			if(actNode != null)
+			{
+				var origem = actNode;
+				var numVertices = vertice.length;
+				for(j=0; j < numVertices; j++){
+					if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+						var destino = j;
+						var i_link = vertice[origem].aresta.length;
+						vertice[origem].aresta[i_link] = vertice[destino];
+						atualizarCanvas();
+					}	
+				}
+				atualizarCanvas();
+				actNode = null;				
+			}
+			break;
+		
+		}
+	}
 }
