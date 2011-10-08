@@ -141,7 +141,7 @@ function atualizarCanvas( e )
 		}
 		contexto.beginPath();
 		contexto.fillStyle = "FFFFFF";	
-		var ajusteX = 12;	//configurar ajustes de forma correta (número com mais de um dígito )
+		var ajusteX = 11 + vertice[i].valor.length * 3;	//configurar ajustes de forma correta (número com mais de um dígito )
 		contexto.fillText( vertice[i].valor, vertice[i].x - ajusteX, vertice[i].y + 4 - descCanvasY );
 		contexto.closePath();
 	}
