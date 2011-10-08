@@ -1,7 +1,7 @@
 var grafos = new Array();
 var numVertices = 0;
 var action = 0;
-var actNode = 9999;
+var actNode = null;
 
 window.addEventListener("load", atualizar_status, false);
 window.addEventListener("dblclick", onMouseDblClick, false);
@@ -57,11 +57,11 @@ function onMouseDown(e){ // o ideal seria que o inserir vertices chamasse essa f
 }
 
 function onMouseMove(e){ // o ideal seria que o inserir vertices chamasse essa função que 
-	if(action == 0 && actNode < 9999 ){
+	if(action == 0 && actNode != null ){
 		grafos[actNode].posx = e.clientX;
 		grafos[actNode].posy = e.clientY;
 		atualizar_status();
-	}else if(action == 3 && actNode < 9999 ){
+	}else if(action == 3 && actNode != null ){
 		atualizar_status();
 		var context = document.getElementById("area").getContext("2d");
 		context.beginPath();
@@ -75,9 +75,9 @@ function onMouseMove(e){ // o ideal seria que o inserir vertices chamasse essa f
 }
 
 function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa função que 
-	if(action == 0 && actNode < 9999 ){
-		actNode = 9999;
-	}else if(action == 3 && actNode < 9999 ){
+	if(action == 0 && actNode != null ){
+		actNode = null;
+	}else if(action == 3 && actNode != null ){
 		var origem = actNode;
 		for(j=0; j < numVertices; j++){
 			if( e.clientX > grafos[j].posx - 20 && e.clientX < grafos[j].posx + 20 && e.clientY > grafos[j].posy - 20 && e.clientY < grafos[j].posy + 20 ){
@@ -89,7 +89,7 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 			}	
 		}
 		action = 0;
-		actNode = 9999;		
+		actNode = null;		
 		
 	}
 }
@@ -106,31 +106,117 @@ function inserir_vertice(){
 	action = 1;
 }
 
+function desenhar_aresta(ox, oy, dx, dy){
+	var context = document.getElementById("area").getContext("2d");
+	var disx = ox - dx;
+	var disy = oy - dy;
+	if(disx >= 0 && disy >= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = -disy/disx;
+			disx = -1;
+					
+		} else {
+			disx = -disx/disy;
+			disy = -1;	
+		}
+	} else if(disx >= 0 && disy <= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = -disy/disx;
+			disx = -1;
+					
+		} else {
+			disx = disx/disy;
+			disy = 1;	
+		}				
+	}else if(disx <= 0 && disy >= 0){
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = disy/disx;
+			disx = 1;
+					
+		} else {
+			disx = -disx/disy;
+			disy = -1;	
+		}
+	}else{
+		if(Math.abs(disx) >= Math.abs(disy)){
+			disy = disy/disx;
+			disx = 1;
+					
+		} else {
+			disx = disx/disy;
+			disy = 1;	
+		}
+	}
+	
+	context.beginPath();
+	context.lineWidth = 3;
+	context.moveTo(ox - 10, oy - 102);
+	context.lineTo(dx - 10 - disx*29, dy - 102 - disy*29);
+	context.stroke();
+	context.closePath();
+
+	context.beginPath();
+	context.lineWidth = 15;
+	context.moveTo(dx - 10 - disx*30, dy - 102 - disy*30);
+	context.lineTo(dx - 10 - disx*27, dy - 102 - disy*27);
+	context.stroke();
+	context.closePath();
+
+	context.beginPath();
+	context.lineWidth = 12;
+	context.moveTo(dx - 10 - disx*28, dy - 102 - disy*28);
+	context.lineTo(dx - 10 - disx*24, dy - 102 - disy*24);
+	context.stroke();
+	context.closePath();			
+
+	context.beginPath();
+	context.lineWidth = 9;
+	context.moveTo(dx - 10 - disx*25, dy - 102 - disy*25);
+	context.lineTo(dx - 10 - disx*21, dy - 102 - disy*21);
+	context.stroke();
+	context.closePath();
+	
+	context.beginPath();
+	context.lineWidth = 6;
+	context.moveTo(dx - 10 - disx*22, dy - 102 - disy*22);
+	context.lineTo(dx - 10 - disx*18, dy - 102 - disy*18);
+	context.stroke();
+	context.closePath();
+
+	context.beginPath();
+	context.lineWidth = 3;
+	context.moveTo(dx - 10 - disx*19, dy - 102 - disy*19);
+	context.lineTo(dx - 10 - disx*10, dy - 102 - disy*10);
+	context.stroke();
+	context.closePath();
+
+}
+
 function atualizar_status(){
 	//document.getElementById("statusdiv").innerHTML = "";
 	var context = document.getElementById("area").getContext("2d");
 	context.fillStyle = "aaaaaa";
 	context.fillRect( 0, 0, 500, 500);
-	context.lineWidth = 5;
+	//context.lineWidth = 5;
 	context.font = "12px serif";
 	var i = 0;
 	for(i=0; i < numVertices; i++){
 		//document.getElementById("statusdiv").innerHTML += grafos[i].nome + ", " + grafos[i].posx + ", " + grafos[i].posy;
 		context.beginPath();
+		context.lineWidth = 3;
 		context.fillStyle = "000000";
 		context.arc(grafos[i].posx - 10, grafos[i].posy - 102, 20, (Math.PI/180)*0, (Math.PI/180)*360, false); //
 		context.fill();
 		context.stroke()
-		context.moveTo(grafos[i].posx - 10, grafos[i].posy - 102);
+		context.closePath();
+
 		var j;
 		for(j=0; j < grafos[i].numlinks; j++){
-			//document.getElementById("statusdiv").innerHTML += " -> " + grafos[i].linkpara[j].nome;
-			context.lineTo(grafos[grafos[i].linkpara[j].nome].posx - 10, grafos[grafos[i].linkpara[j].nome].posy - 102);
-			context.moveTo(grafos[i].posx - 10, grafos[i].posy - 102);
-			context.fill();
-			context.stroke();
-			
+			desenhar_aresta(grafos[i].posx, grafos[i].posy, grafos[grafos[i].linkpara[j].nome].posx, grafos[grafos[i].linkpara[j].nome].posy);
+				
 		}
+
+		context.beginPath();
 		context.fillStyle = "FFFFFF";
 		context.fillText(grafos[i].nome, grafos[i].posx - 13, grafos[i].posy - 97);
 		context.closePath();
