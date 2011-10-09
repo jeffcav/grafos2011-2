@@ -5,7 +5,7 @@ var contexto = canvas.getContext( "2d" );
 var posXY = document.getElementById( "posXY" );
 var xCanvas = 0;
 var yCanvas = 0;
-var larguraCanvas = 500;
+var larguraCanvas = 1000;
 var alturaCanvas = 500;
 var acao;
 var actNode = null;
@@ -20,7 +20,7 @@ var moverButton = document.getElementById("mover");
 
 /* Constantes */
 const descCanvasX = 10;
-const descCanvasY = 104;
+const descCanvasY = 128;
 
 /* Escutas de eventos */
 window.addEventListener( 'load', atualizarCanvas, false );
@@ -30,47 +30,67 @@ criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
 moverButton.addEventListener( 'click', mover, false );
 
-canvas.addEventListener( 'click', verificarAcao, false );
+canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 window.addEventListener( 'mousedown', onMouseDown, false);
 window.addEventListener( 'mouseup', onMouseUp, false);
 
-function desenhar_aresta(ox, oy, dx, dy){
+function desenhar_aresta( ox, oy, dx, dy )
+{
 	var disx = ox - dx;
 	var disy = oy - dy;
-	if(disx >= 0 && disy >= 0){
-		if(Math.abs(disx) >= Math.abs(disy)){
+	if( disx >= 0 && disy >= 0 )
+	{
+		if( Math.abs( disx ) >= Math.abs( disy ) )
+		{
 			disy = -disy/disx;
 			disx = -1;
 					
-		} else {
+		} 
+		else 
+		{
 			disx = -disx/disy;
 			disy = -1;	
 		}
-	} else if(disx >= 0 && disy <= 0){
-		if(Math.abs(disx) >= Math.abs(disy)){
+	} 
+	else if( disx >= 0 && disy <= 0 )
+	{
+		if( Math.abs( disx ) >= Math.abs( disy ) )
+		{
 			disy = -disy/disx;
 			disx = -1;
 					
-		} else {
+		} 
+		else 
+		{
 			disx = disx/disy;
 			disy = 1;	
 		}				
-	}else if(disx <= 0 && disy >= 0){
-		if(Math.abs(disx) >= Math.abs(disy)){
+	}
+	else if( disx <= 0 && disy >= 0 )
+	{
+		if( Math.abs( disx ) >= Math.abs( disy ) )
+		{
 			disy = disy/disx;
 			disx = 1;
 					
-		} else {
+		} 
+		else 
+		{
 			disx = -disx/disy;
 			disy = -1;	
 		}
-	}else{
-		if(Math.abs(disx) >= Math.abs(disy)){
+	}
+	else
+	{
+		if( Math.abs( disx ) >= Math.abs( disy ) )
+		{
 			disy = disy/disx;
 			disx = 1;
 					
-		} else {
+		} 
+		else 
+		{
 			disx = disx/disy;
 			disy = 1;	
 		}
@@ -160,21 +180,12 @@ function desenharVertice( v )
 			
 }
 
-function desenharAresta( v, indiceAresta )
-{
-	//contexto.beginPath();
-	var verticeDestino = v.aresta[ indiceAresta ];
-	contexto.lineTo( verticeDestino.x - descCanvasX, verticeDestino.y - descCanvasY );
-	contexto.moveTo( v.x - descCanvasX, v.y - descCanvasY );
-	contexto.stroke();
-	//contexto.closePath();			
-}
 
 function desenharFundoCanvas()
 {
 
 	contexto.fillStyle = "aaaaaa";
-	contexto.fillRect( xCanvas, yCanvas, alturaCanvas, larguraCanvas );		
+	contexto.fillRect( xCanvas, yCanvas, larguraCanvas, alturaCanvas);		
 	contexto.lineWidth = 3;
 	contexto.font = "12px serif";
 	
@@ -195,7 +206,7 @@ function mover(){
 	acao = acoes.move;
 }
 
-function verificarAcao( e )
+function mouseClick( e )
 {
 	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
 	{
@@ -229,16 +240,20 @@ function onMouseDown( e )
 		switch( acao )
 		{
 		case acoes.move:
-			for(j=0; j < numVertices; j++){
-				if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+			for( j=0; j < numVertices; j++ )
+			{
+				if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
+				{
 					actNode = j;
 				}	
 			}
 			break;
 
 		case acoes.inserirAresta:
-			for(j=0; j < numVertices; j++){
-				if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+			for( j=0; j < numVertices; j++ )
+			{
+				if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
+				{
 					actNode = j;
 				}	
 			}			
@@ -269,14 +284,12 @@ function mouseMove( e )
 		case acoes.inserirAresta:
 			if(actNode != null)
 			{
-				
 				contexto.beginPath();
 				contexto.moveTo(vertice[actNode].x - descCanvasX, vertice[actNode].y - descCanvasY);
 				contexto.lineTo(e.clientX - 10, e.clientY - 102);
 				contexto.stroke();
 				contexto.closePath();
-				atualizarCanvas();
-						
+				atualizarCanvas();			
 			}
 			break;
 		
@@ -300,12 +313,14 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 			break;
 
 		case acoes.inserirAresta:
-			if(actNode != null)
+			if( actNode != null )
 			{
 				var origem = actNode;
 				var numVertices = vertice.length;
-				for(j=0; j < numVertices; j++){
-					if( e.clientX > vertice[j].x - 20 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 ){
+				for( j=0; j < numVertices; j++ )
+				{
+					if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
+					{
 						var destino = j;
 						var i_link = vertice[origem].aresta.length;
 						vertice[origem].aresta[i_link] = vertice[destino];
