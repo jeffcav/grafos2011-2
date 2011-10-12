@@ -98,43 +98,43 @@ function desenhar_aresta( ox, oy, dx, dy )
 	
 	contexto.beginPath();
 	contexto.lineWidth = 3;
-	contexto.moveTo(ox - 10, oy - 102);
-	contexto.lineTo(dx - 10 - disx*29, dy - 102 - disy*29);
+	contexto.moveTo(ox - descCanvasX, oy - descCanvasY);
+	contexto.lineTo(dx - descCanvasX - disx*29, dy - descCanvasY - disy*29);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 15;
-	contexto.moveTo(dx - 10 - disx*30, dy - 102 - disy*30);
-	contexto.lineTo(dx - 10 - disx*27, dy - 102 - disy*27);
+	contexto.moveTo(dx - descCanvasX - disx*30, dy - descCanvasY - disy*30);
+	contexto.lineTo(dx - descCanvasX - disx*27, dy - descCanvasY - disy*27);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 12;
-	contexto.moveTo(dx - 10 - disx*28, dy - 102 - disy*28);
-	contexto.lineTo(dx - 10 - disx*24, dy - 102 - disy*24);
+	contexto.moveTo(dx - descCanvasX - disx*28, dy - descCanvasY - disy*28);
+	contexto.lineTo(dx - descCanvasX - disx*24, dy - descCanvasY - disy*24);
 	contexto.stroke();
 	contexto.closePath();			
 
 	contexto.beginPath();
 	contexto.lineWidth = 9;
-	contexto.moveTo(dx - 10 - disx*25, dy - 102 - disy*25);
-	contexto.lineTo(dx - 10 - disx*21, dy - 102 - disy*21);
+	contexto.moveTo(dx - descCanvasX - disx*25, dy - descCanvasY - disy*25);
+	contexto.lineTo(dx - descCanvasX - disx*21, dy - descCanvasY - disy*21);
 	contexto.stroke();
 	contexto.closePath();
 	
 	contexto.beginPath();
 	contexto.lineWidth = 6;
-	contexto.moveTo(dx - 10 - disx*22, dy - 102 - disy*22);
-	contexto.lineTo(dx - 10 - disx*18, dy - 102 - disy*18);
+	contexto.moveTo(dx - descCanvasX - disx*22, dy - descCanvasY - disy*22);
+	contexto.lineTo(dx - descCanvasX - disx*18, dy - descCanvasY - disy*18);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 3;
-	contexto.moveTo(dx - 10 - disx*19, dy - 102 - disy*19);
-	contexto.lineTo(dx - 10 - disx*10, dy - 102 - disy*10);
+	contexto.moveTo(dx - descCanvasX - disx*19, dy - descCanvasY - disy*19);
+	contexto.lineTo(dx - descCanvasX - disx*10, dy - descCanvasY - disy*10);
 	contexto.stroke();
 	contexto.closePath();
 
@@ -286,7 +286,7 @@ function mouseMove( e )
 			{
 				contexto.beginPath();
 				contexto.moveTo(vertice[actNode].x - descCanvasX, vertice[actNode].y - descCanvasY);
-				contexto.lineTo(e.clientX - 10, e.clientY - 102);
+				contexto.lineTo(e.clientX - descCanvasX, e.clientY - descCanvasY);
 				contexto.stroke();
 				contexto.closePath();
 				atualizarCanvas();			
