@@ -35,7 +35,7 @@ canvas.addEventListener( 'mousemove', mouseMove, false );
 window.addEventListener( 'mousedown', onMouseDown, false);
 window.addEventListener( 'mouseup', onMouseUp, false);
 
-function desenhar_aresta( ox, oy, dx, dy )
+function desenhar_aresta( ox, oy, dx, dy, valor )
 {
 	var disx = ox - dx;
 	var disy = oy - dy;
@@ -137,6 +137,11 @@ function desenhar_aresta( ox, oy, dx, dy )
 	contexto.lineTo(dx - descCanvasX - disx*10, dy - descCanvasY - disy*10);
 	contexto.stroke();
 	contexto.closePath();
+	
+	contexto.beginPath();
+	contexto.fillStyle = "8b4726";	
+	contexto.fillText( valor, dx - descCanvasX - disx*33, dy - descCanvasY - disy*33 - 15);
+	contexto.closePath();
 
 }
 
@@ -157,7 +162,7 @@ function atualizarCanvas( e )
 		var j;
 		for( j = 0; j < numArestas; j++ )
 		{
-			desenhar_aresta( vertice[i].x, vertice[i].y, vertice[i].aresta[j].x, vertice[i].aresta[j].y );
+			desenhar_aresta( vertice[i].x, vertice[i].y, vertice[i].aresta[j].destino.x, vertice[i].aresta[j].destino.y, vertice[i].aresta[j].valor);
 		}
 		contexto.beginPath();
 		contexto.fillStyle = "FFFFFF";	
@@ -323,7 +328,8 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 					{
 						var destino = j;
 						var i_link = vertice[origem].aresta.length;
-						vertice[origem].aresta[i_link] = vertice[destino];
+						var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
+						vertice[origem].aresta[i_link] = new Aresta(valor, 1, vertice[destino]);
 						atualizarCanvas();
 					}	
 				}
