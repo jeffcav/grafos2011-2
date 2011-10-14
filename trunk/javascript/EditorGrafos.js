@@ -17,6 +17,7 @@ var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deleteVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
 var moverButton = document.getElementById("mover");
+var salvar = document.getElementById("salvar");
 
 /* Constantes */
 const descCanvasX = 10;
@@ -29,6 +30,7 @@ window.addEventListener( 'load', mouseMove, false );
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
 moverButton.addEventListener( 'click', mover, false );
+salvar.addEventListener( 'click', salvarGrafo, false );
 
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
@@ -203,12 +205,32 @@ function inserirVertice()
 	acao = acoes.inserirVertice;
 }
 
-function inserirAresta(){
+function inserirAresta()
+{
 	acao = acoes.inserirAresta;
 }
 
-function mover(){
+function mover()
+{
 	acao = acoes.move;
+}
+
+function salvarGrafo()
+{
+	var xmlhttp = new XMLHttpRequest(); // Função Personalizada
+	xmlhttp.open( "POST", "http://localhost/salvarGrafos.php", true );
+	xmlhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// Setando Content-type
+	xmlhttp.send( "g1=5" );
+
+	xmlhttp.onreadystatechange = function()
+    {
+		if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+		{
+			var resposta = xmlhttp.responseText;
+			console.log( resposta );
+		}
+    }
+	
 }
 
 function mouseClick( e )
