@@ -3,8 +3,6 @@
 var canvas = document.getElementById( "canvas" );
 var contexto = canvas.getContext( "2d" );
 var posXY = document.getElementById( "posXY" );
-var valorNovoVertice = document.getElementById("valorVerticeInput");
-var valorNovoVerticeDiv = document.getElementById("valorVerticeDiv");
 var xCanvas = 0;
 var yCanvas = 0;
 var larguraCanvas = 1000;
@@ -245,39 +243,18 @@ function salvarGrafo()
 
 function mouseClick( e )
 {
-	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	if( mouseNoCanvas(e) )
 	{
 
 		switch( acao )
 		{	
 		case acoes.inserirVertice:
-			var tamVertice = vertice.length;
-			
-			var valor;
-			while( !(padraoValorVertice.test(valor)) ){
-				var valor = window.prompt( "Digite um valor valido para o vertice", "" );	// checar se já existe
-			}
-			valor = padraoValorVertice.exec(valor);
-			
-			vertice[ tamVertice ] = new Vertice( valor, e.clientX, e.clientY );			
+			inserirVerticeAuxiliar(e)			
 			atualizarCanvas();
-			//acao = acoes.move;
 			break;
 
 		case acoes.deletarVertice:
-			var indiceVerticeADeletar = indiceNoSobMouse(e);
-			var verticeADeletar = vertice[indiceVerticeADeletar];
-			var numLinks = 	verticeADeletar.aresta.length;
-			
-			/*remover os links que chegam ao vertice a ser deletado*/
-			removerLinksPara(verticeADeletar);
-
-			/*remover os links que partem do vertice a ser deletado*/
-			verticeADeletar.aresta.splice(0, numLinks);
-			
-			/*remover vertice da estrutura*/
-			vertice.splice(indiceVerticeADeletar, 1);
-			
+			removerVerticeAuxiliar(e);
 			atualizarCanvas();
 			break;	
 
@@ -286,6 +263,44 @@ function mouseClick( e )
 		
 		}
 	}
+}
+
+function inserirVerticeAuxiliar(e){
+	var valor, indiceVertice, tamVertice = vertice.length, nomeEncontrado = true;
+
+
+	while( nomeEncontrado == true ){
+		var valor = window.prompt( "Digite um valor valido para o vertice", "" );
+		
+		if( padraoValorVertice.test(valor) == true){
+			
+			nomeEncontrado = false;
+			for(indiceVertice = 0; indiceVertice < vertice.length; indiceVertice++){
+				if(vertice[indiceVertice].valor == valor){
+					nomeEncontrado = true;
+				}
+			}
+		}
+	}
+
+	valor = padraoValorVertice.exec(valor);	
+	vertice[ tamVertice ] = new Vertice( valor, e.clientX, e.clientY );
+}
+
+
+function removerVerticeAuxiliar(e){
+	var indiceVerticeADeletar = indiceNoSobMouse(e);
+	var verticeADeletar = vertice[indiceVerticeADeletar];
+	var numLinks = 	verticeADeletar.aresta.length;
+	
+	/*remover os links que chegam ao vertice a ser deletado*/
+	removerLinksPara(verticeADeletar);
+
+	/*remover os links que partem do vertice a ser deletado*/
+	verticeADeletar.aresta.splice(0, numLinks);
+	
+	/*remover vertice da estrutura*/
+	vertice.splice(indiceVerticeADeletar, 1);
 }
 
 function removerLinksPara(verticeADeletar){
@@ -306,7 +321,7 @@ function removerLinksPara(verticeADeletar){
 function onMouseDown( e )
 {
 	var numVertices = vertice.length;
-	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	if( mouseNoCanvas(e) )
 	{
 
 		switch( acao )
@@ -326,7 +341,7 @@ function mouseMove( e )
 {
 	posXY.innerHTML = 'Pos X = ' + e.clientX + "<br />";	
 	posXY.innerHTML += 'Pos Y = ' + e.clientY + "<br />";
-	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	if( mouseNoCanvas(e) )
 	{
 
 		switch( acao )
@@ -358,7 +373,7 @@ function mouseMove( e )
 
 function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa função que 
 	
-	if( e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY )
+	if( mouseNoCanvas(e) )
 	{
 
 		switch( acao )
@@ -393,6 +408,15 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 			break;
 		
 		}
+	}
+}
+
+function mouseNoCanvas(e){
+	if(e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY ){
+		return true;
+	}
+	else{
+		return false;
 	}
 }
 
