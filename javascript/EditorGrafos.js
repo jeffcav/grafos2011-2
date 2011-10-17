@@ -3,6 +3,8 @@
 var canvas = document.getElementById( "canvas" );
 var contexto = canvas.getContext( "2d" );
 var posXY = document.getElementById( "posXY" );
+var valorNovoVertice = document.getElementById("valorVerticeInput");
+var valorNovoVerticeDiv = document.getElementById("valorVerticeDiv");
 var xCanvas = 0;
 var yCanvas = 0;
 var larguraCanvas = 1000;
@@ -10,8 +12,10 @@ var alturaCanvas = 500;
 var acao;
 var actNode = null;
 var vertice = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4 };	
-	
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4 };
+var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
+
+
 /* Referencia aos botões */
 var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deletaVertice" );
@@ -248,7 +252,13 @@ function mouseClick( e )
 		{	
 		case acoes.inserirVertice:
 			var tamVertice = vertice.length;
-			var valor = window.prompt( "Digite o valor do vertice", "" );	// checar se valor é válido e se já existe
+			
+			var valor;
+			while( !(padraoValorVertice.test(valor)) ){
+				var valor = window.prompt( "Digite um valor valido para o vertice", "" );	// checar se já existe
+			}
+			valor = padraoValorVertice.exec(valor);
+			
 			vertice[ tamVertice ] = new Vertice( valor, e.clientX, e.clientY );			
 			atualizarCanvas();
 			//acao = acoes.move;
@@ -378,18 +388,6 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 				vertice[origem].aresta[i_link] = new Aresta(valor, 1, vertice[destino]);
 				atualizarCanvas();
 				
-				/*for( j=0; j < numVertices; j++ )
-				{
-					if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
-					{
-						var destino = j;
-						var i_link = vertice[origem].aresta.length;
-						var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
-						vertice[origem].aresta[i_link] = new Aresta(valor, 1, vertice[destino]);
-						atualizarCanvas();
-					}	
-				}*/
-				//atualizarCanvas();
 				actNode = null;				
 			}
 			break;
