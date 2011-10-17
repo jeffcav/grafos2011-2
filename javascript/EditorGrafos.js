@@ -14,7 +14,7 @@ var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta"
 	
 /* Referencia aos botões */
 var criarVerticeButton = document.getElementById( "criaVertice" );
-var deletarVertice = document.getElementById( "deleteVertice" );
+var deletarVertice = document.getElementById( "deletaVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
 var moverButton = document.getElementById("mover");
 var salvar = document.getElementById("salvar");
@@ -31,11 +31,13 @@ criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
 moverButton.addEventListener( 'click', mover, false );
 salvar.addEventListener( 'click', salvarGrafo, false );
+deletarVertice.addEventListener('click', removerVertice, false);
 
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 window.addEventListener( 'mousedown', onMouseDown, false);
 window.addEventListener( 'mouseup', onMouseUp, false);
+
 
 function desenhar_aresta( ox, oy, dx, dy, valor )
 {
@@ -210,6 +212,10 @@ function inserirAresta()
 	acao = acoes.inserirAresta;
 }
 
+function removerVertice(){
+	acao = acoes.deletarVertice;
+}
+
 function mover()
 {
 	acao = acoes.move;
@@ -248,12 +254,41 @@ function mouseClick( e )
 			//acao = acoes.move;
 			break;
 
-		case acoes.deletarVertice: 		
+		case acoes.deletarVertice:
+			var indiceVerticeADeletar = indiceNoSobMouse(e);
+			var verticeADeletar = vertice[indiceVerticeADeletar];
+			var numLinks = 	verticeADeletar.aresta.length;
+			
+			/*remover os links que chegam ao vertice a ser deletado*/
+			removerLinksPara(verticeADeletar);
+
+			/*remover os links que partem do vertice a ser deletado*/
+			verticeADeletar.aresta.splice(0, numLinks);
+			
+			/*remover vertice da estrutura*/
+			vertice.splice(indiceVerticeADeletar, 1);
+			
+			atualizarCanvas();
 			break;	
 
 		case acoes.deletarAresta:
 			break;
 		
+		}
+	}
+}
+
+function removerLinksPara(verticeADeletar){
+	var verticeTemp, arestasTemp, indiceVertices, indiceArestas;
+	
+	for(indiceVertices = 0; indiceVertices < vertice.length; indiceVertices++){
+		verticeTemp = vertice[indiceVertices];
+		arestasTemp = verticeTemp.aresta;
+
+		for(indiceArestas = 0; indiceArestas < arestasTemp.length; indiceArestas++){
+			if(arestasTemp[indiceArestas].destino == verticeADeletar){
+				arestasTemp.splice(indiceArestas, 1);
+			}
 		}
 	}
 }
@@ -267,25 +302,12 @@ function onMouseDown( e )
 		switch( acao )
 		{
 		case acoes.move:
-			for( j=0; j < numVertices; j++ )
-			{
-				if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
-				{
-					actNode = j;
-				}	
-			}
+			actNode = indiceNoSobMouse(e);
 			break;
 
 		case acoes.inserirAresta:
-			for( j=0; j < numVertices; j++ )
-			{
-				if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
-				{
-					actNode = j;
-				}	
-			}			
+			actNode = indiceNoSobMouse(e);
 			break;
-		
 		}
 	}
 }
@@ -344,7 +366,19 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 			{
 				var origem = actNode;
 				var numVertices = vertice.length;
-				for( j=0; j < numVertices; j++ )
+				
+				var destino = indiceNoSobMouse(e);
+				if(destino == -1){
+					atualizarCanvas();
+					return;
+				}
+				
+				var i_link = vertice[origem].aresta.length;
+				var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
+				vertice[origem].aresta[i_link] = new Aresta(valor, 1, vertice[destino]);
+				atualizarCanvas();
+				
+				/*for( j=0; j < numVertices; j++ )
 				{
 					if( e.clientX > vertice[j].x - 25 && e.clientX < vertice[j].x + 20 && e.clientY > vertice[j].y - 20 && e.clientY < vertice[j].y + 20 )
 					{
@@ -354,12 +388,24 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 						vertice[origem].aresta[i_link] = new Aresta(valor, 1, vertice[destino]);
 						atualizarCanvas();
 					}	
-				}
-				atualizarCanvas();
+				}*/
+				//atualizarCanvas();
 				actNode = null;				
 			}
 			break;
 		
 		}
 	}
+}
+
+function indiceNoSobMouse(e){
+	var indiceNoSelecionado = -1, indice;
+	for( indice=0; indice < vertice.length; indice++ )
+	{
+		if( e.clientX > vertice[indice].x - 25 && e.clientX < vertice[indice].x + 20 && e.clientY > vertice[indice].y - 20 && e.clientY < vertice[indice].y + 20 )
+		{
+			indiceNoSelecionado = indice;
+		}	
+	}
+	return indiceNoSelecionado;
 }
