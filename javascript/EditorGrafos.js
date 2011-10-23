@@ -9,6 +9,7 @@ var larguraCanvas = 1000;
 var alturaCanvas = 500;
 var acao;
 var actNode = null;
+var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
 var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6};
@@ -23,6 +24,7 @@ var moverButton = document.getElementById("mover");
 var salvar = document.getElementById("salvar");
 var criarGrafoButton = document.getElementById( "criaGrafo" );
 var deletarGrafoButton = document.getElementById( "deletaGrafo" );
+var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
 var moverGrafoButton = document.getElementById("moverGrafo");
 
 /* Constantes */
@@ -50,7 +52,7 @@ window.addEventListener( 'mousedown', onMouseDown, false);
 window.addEventListener( 'mouseup', onMouseUp, false);
 
 
-function desenhar_aresta(cor, ox, oy, dx, dy, valor )
+function desenhar_aresta(ox, oy, dx, dy, valor )
 {
 	var disx = ox - dx;
 	var disy = oy - dy;
@@ -111,7 +113,7 @@ function desenhar_aresta(cor, ox, oy, dx, dy, valor )
 		}
 	}
 	
-	contexto.fillStyle = cor;	
+	contexto.strokeStyle = "000000";	
 	
 	contexto.beginPath();
 	contexto.lineWidth = 3;
@@ -180,7 +182,7 @@ function atualizarCanvas( e )
 			var j;
 			for( j = 0; j < numArestas; j++ )
 			{
-				desenhar_aresta(grafos[ig].cor, grafos[ig].vertice[i].x, grafos[ig].vertice[i].y, grafos[ig].vertice[i].aresta[j].destino.x, grafos[ig].vertice[i].aresta[j].destino.y, grafos[ig].vertice[i].aresta[j].valor);
+				desenhar_aresta(grafos[ig].vertice[i].x, grafos[ig].vertice[i].y, grafos[ig].vertice[i].aresta[j].destino.x, grafos[ig].vertice[i].aresta[j].destino.y, grafos[ig].vertice[i].aresta[j].valor);
 			}
 			contexto.beginPath();
 			contexto.fillStyle = "FFFFFF";	
@@ -242,12 +244,19 @@ function inserirGrafo()
 {
 	var nome = window.prompt( "Digite o nome do grafo que voce deseja criar.", "" );
 	var cor = window.prompt( "Digite a cor do grafo que voce deseja criar.", "000000" );
-	grafos[grafos.length] = new Grafo(nome, cor);
+	actGrafo = new Grafo(nome, cor);
+	grafos[grafos.length] = actGrafo;
 }
 
 function moverGrafo()
 {
-	acao = acores.moverGrafo;
+	actGrafo = null;
+	acao = acoes.moverGrafo;
+}
+
+function selecionarGrafo()
+{
+	acao = acoes.selecionarGrafo;
 }
 
 function removerGrafo()
@@ -294,6 +303,13 @@ function mouseClick( e )
 
 		case acoes.deletarAresta:
 			break;
+			
+		case acoes.selecionarGrafo:
+			if(grafos.length > 0)
+			{
+				actGrafo = grafoSobMouse(e);
+			}
+			break;
 		
 		}
 	}
@@ -305,7 +321,8 @@ function inserirVerticeAuxiliar(e){
 
 		while( nomeEncontrado == true ){
 			var valor = window.prompt( "Digite um valor valido para o vertice", "" );
-			var mygrafo = window.prompt( "Digite em qual grafo", grafos[0].nome );
+			if(actGrafo != null ) var mygrafo = window.prompt( "Digite em qual grafo", actGrafo.nome );
+			else var mygrafo = window.prompt( "Digite em qual grafo", "Nao definido" );
 			
 			if( padraoValorVertice.test(valor) == true){
 				
@@ -332,25 +349,26 @@ function inserirVerticeAuxiliar(e){
 
 
 function removerVerticeAuxiliar(e){
+	var myGrafo = grafoSobMouse(e);
 	var indiceVerticeADeletar = indiceNoSobMouse(e);
-	var verticeADeletar = vertice[indiceVerticeADeletar];
-	var numLinks = 	verticeADeletar.aresta.length;
+	var verticeADeletar = myGrafo.vertice[indiceVerticeADeletar];
+	var numLinks = verticeADeletar.aresta.length;
 	
 	/*remover os links que chegam ao vertice a ser deletado*/
-	removerLinksPara(verticeADeletar);
+	removerLinksPara(verticeADeletar, myGrafo);
 
 	/*remover os links que partem do vertice a ser deletado*/
 	verticeADeletar.aresta.splice(0, numLinks);
 	
 	/*remover vertice da estrutura*/
-	vertice.splice(indiceVerticeADeletar, 1);
+	myGrafo.vertice.splice(indiceVerticeADeletar, 1);
 }
 
-function removerLinksPara(verticeADeletar){
+function removerLinksPara(verticeADeletar, myGrafo){
 	var verticeTemp, arestasTemp, indiceVertices, indiceArestas;
 	
-	for(indiceVertices = 0; indiceVertices < vertice.length; indiceVertices++){
-		verticeTemp = vertice[indiceVertices];
+	for(indiceVertices = 0; indiceVertices < myGrafo.vertice.length; indiceVertices++){
+		verticeTemp = myGrafo.vertice[indiceVertices];
 		arestasTemp = verticeTemp.aresta;
 
 		for(indiceArestas = 0; indiceArestas < arestasTemp.length; indiceArestas++){
@@ -360,6 +378,8 @@ function removerLinksPara(verticeADeletar){
 		}
 	}
 }
+
+var iniX, iniY;
 
 function onMouseDown( e )
 {
@@ -375,6 +395,13 @@ function onMouseDown( e )
 
 		case acoes.inserirAresta:
 			actNode = NoSobMouse(e);
+			actGrafo = grafoSobMouse(e);
+			break;
+		
+		case acoes.moverGrafo:
+			actGrafo = grafoSobMouse(e);
+			iniX = e.clientX;
+			iniY = e.clientY;
 			break;
 		}
 	}
@@ -384,14 +411,20 @@ function mouseMove( e )
 {
 	posXY.innerHTML = " ";
 	for(var ig = 0; ig < grafos.length; ig++){
-		posXY.innerHTML += '<font color=' + grafos[ig].cor + '>  '+ grafos[ig].nome +'  </font>';
+		if(grafos[ig] == actGrafo)
+		{
+			posXY.innerHTML += '<font color=' + grafos[ig].cor + '><u> '+ grafos[ig].nome +' </u></font>';
+		}
+		else
+		{
+			posXY.innerHTML += '<font color=' + grafos[ig].cor + '>  '+ grafos[ig].nome +'  </font>';
+		}
 	}
 	posXY.innerHTML += "<br />";
 	posXY.innerHTML += 'Pos X = ' + e.clientX + "<br />";	
 	posXY.innerHTML += 'Pos Y = ' + e.clientY + "<br />";
 	if( mouseNoCanvas(e) )
 	{
-
 		switch( acao )
 		{
 		case acoes.move:
@@ -407,6 +440,7 @@ function mouseMove( e )
 			if(actNode != null)
 			{
 				contexto.beginPath();
+				contexto.strokeStyle = "000000";
 				contexto.moveTo(actNode.x - descCanvasX, actNode.y - descCanvasY);
 				contexto.lineTo(e.clientX - descCanvasX, e.clientY - descCanvasY);
 				contexto.stroke();
@@ -415,12 +449,26 @@ function mouseMove( e )
 			}
 			break;
 		
+		case acoes.moverGrafo:
+			if(actGrafo != null )
+			{
+				var x = iniX - e.clientX;
+				var y = iniY - e.clientY;
+				iniX = e.clientX;
+				iniY = e.clientY;
+				for(var i = 0; i < actGrafo.vertice.length; i++ ){
+					actGrafo.vertice[i].x -= x;
+					actGrafo.vertice[i].y -= y;
+				}
+				atualizarCanvas();
+			}
+			break;
 		}
 	}
 }
 
-function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa função que 
-	
+function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa função que 
+{
 	if( mouseNoCanvas(e) )
 	{
 
@@ -437,22 +485,33 @@ function onMouseUp(e){ // o ideal seria que o inserir vertices chamasse essa fun
 		case acoes.inserirAresta:
 			if( actNode != null )
 			{
-				var origem = actNode;
-				var numVertices = vertice.length;
-				
-				var destino = NoSobMouse(e);
-				if(destino == -1){
-					atualizarCanvas();
-					return;
+				var grafoAtual = grafoSobMouse(e);
+				if(grafoAtual == actGrafo)
+				{
+					var origem = actNode;
+					var numVertices = vertice.length;
+					
+					var destino = NoSobMouse(e);
+					if(destino == -1){
+						atualizarCanvas();
+						return;
+					}
+					
+					var i_link = origem.aresta.length;
+					var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
+					origem.aresta[i_link] = new Aresta(valor, 1, destino);
+					atualizarCanvas();	
 				}
-				
-				var i_link = origem.aresta.length;
-				var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
-				origem.aresta[i_link] = new Aresta(valor, 1, destino);
+				actNode = null;	
 				atualizarCanvas();
-				
-				actNode = null;				
 			}
+			break;
+		case acoes.moverGrafo:
+			if(actGrafo != null)
+			{
+				actGrafo = null;
+			}
+			atualizarCanvas();
 			break;
 		
 		}
@@ -468,8 +527,22 @@ function mouseNoCanvas(e){
 	}
 }
 
+function grafoSobMouse(e){
+	var gSelecionado = -1, indice, ig;
+	for(ig = 0; ig < grafos.length; ig++ ){
+		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
+		{
+			if( e.clientX > grafos[ig].vertice[indice].x - 25 && e.clientX < grafos[ig].vertice[indice].x + 20 && e.clientY > grafos[ig].vertice[indice].y - 20 && e.clientY < grafos[ig].vertice[indice].y + 20 )
+			{
+				gSelecionado = grafos[ig];
+			}	
+		}
+	}
+	return gSelecionado;
+}
+
 function NoSobMouse(e){
-	var NoSelecionado = -1, indice, ig;
+	var NoSelecionado = null, indice, ig;
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
@@ -480,4 +553,18 @@ function NoSobMouse(e){
 		}
 	}
 	return NoSelecionado;
+}
+
+function indiceNoSobMouse(e){
+	var indiceNoSelecionado = -1, indice, ig;
+	for(ig = 0; ig < grafos.length; ig++ ){
+		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
+		{
+			if( e.clientX > grafos[ig].vertice[indice].x - 25 && e.clientX < grafos[ig].vertice[indice].x + 20 && e.clientY > grafos[ig].vertice[indice].y - 20 && e.clientY < grafos[ig].vertice[indice].y + 20 )
+			{
+				indiceNoSelecionado = indice;
+			}	
+		}
+	}
+	return indiceNoSelecionado;
 }
