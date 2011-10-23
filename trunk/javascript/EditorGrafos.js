@@ -268,17 +268,55 @@ function removerGrafo()
 
 function salvarGrafo()
 {
-	var xmlhttp = new XMLHttpRequest(); // Função Personalizada
+	var nomeArquivo;
+	var xmlhttp;
+	var xmlGrafos;	
+
+	/* Obtem um nome para o arquivo */
+	nomeArquivo = window.prompt( "Digite um nome para o arquivo.", "defaultGrafo" );
+
+	/* Abre conexão com servidor */
+	xmlhttp = new XMLHttpRequest(); 
 	xmlhttp.open( "POST", "http://localhost/salvarGrafos.php", true );
 	xmlhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// Setando Content-type
-	xmlhttp.send( "g1=5" );
+	
+	/* Monta o arquivo xml a ser enviado */
+	xmlGrafos = "<?xml version='1.0'?>";
+	for( var i = 0; i < grafos.length; i++ )
+	{
+		xmlGrafos += "\n<GRAFOS>";
+		var tempVertice = grafos[i].vertice;
+		for( var j = 0; j < tempVertice.length; j++ )
+		{
+			xmlGrafos += "\n\t<VERTICE>";
+			xmlGrafos += "\n\t\t<VALOR>" + tempVertice[j].valor + "</VALOR>";
+			var tempAresta = tempVertice[j].aresta;
+			for( var k = 0; k < tempAresta.length; k++ )
+			{
+				xmlGrafos += "\n\t\t<ARESTA>";
+				xmlGrafos += "\n\t\t\t<VALOR>" + tempAresta[k].valor + "</VALOR>";
+				xmlGrafos += "\n\t\t\t<DIRECIONADO>" + tempAresta[k].direcionado + "</DIRECIONADO>";
+				xmlGrafos += "\n\t\t\t<COR>" + tempAresta[k].valor + "</COR>";
+				xmlGrafos += "\n\t\t</ARESTA>";
+			}
+			xmlGrafos += "\n\t\t<X>" + tempVertice[j].x + "</X>";
+			xmlGrafos += "\n\t\t<Y>" + tempVertice[j].y + "</Y>";
+			xmlGrafos += "\n\t</VERTICE>";
+		}			
+		xmlGrafos += "\n\t<NOME>" + grafos[i].nome + "</NOME>";
+		xmlGrafos += "\n\t<COR>" + grafos[i].cor + "</COR>";
+		xmlGrafos += "\n</GRAFOS>";
+	}
+
+	/* Envia requisição via método POST */
+	xmlhttp.send( "nomeArquivo=" + nomeArquivo + "&conjuntoGrafos=" + xmlGrafos );
 
 	xmlhttp.onreadystatechange = function()
     {
 		if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
 		{
 			var resposta = xmlhttp.responseText;
-			console.log( resposta );
+			window.alert( resposta );
 		}
     }
 	
