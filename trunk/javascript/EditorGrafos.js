@@ -261,7 +261,14 @@ function selecionarGrafo()
 
 function removerGrafo()
 {
-	acao = acoes.deletarGrafo;
+	//acao = acoes.deletarGrafo;
+	var nome = window.prompt( "Digite o nome do grafo que voce deseja remover.", "" );
+	for(var ig = 0; ig < grafos.length; ig++){
+		if(grafos[ig].nome == nome){
+			grafos.splice(ig, 1);
+		}
+	}
+	atualizarCanvas();
 }
 
 
