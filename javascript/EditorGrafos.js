@@ -22,6 +22,7 @@ var deletarVertice = document.getElementById( "deletaVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
 var moverButton = document.getElementById("mover");
 var salvar = document.getElementById("salvar");
+var ler = document.getElementById("ler");
 var criarGrafoButton = document.getElementById( "criaGrafo" );
 var deletarGrafoButton = document.getElementById( "deletaGrafo" );
 var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
@@ -40,6 +41,7 @@ criarArestaButton.addEventListener( 'click', inserirAresta, false );
 deletarVertice.addEventListener('click', removerVertice, false);
 moverButton.addEventListener( 'click', mover, false );
 salvar.addEventListener( 'click', salvarGrafo, false );
+ler.addEventListener( 'click', lerGrafo, false );
 
 criarGrafoButton.addEventListener( 'click', inserirGrafo, false );
 deletarGrafoButton.addEventListener('click', removerGrafo, false);
@@ -271,8 +273,6 @@ function removerGrafo()
 	atualizarCanvas();
 }
 
-
-
 function salvarGrafo()
 {
 	var nomeArquivo;
@@ -284,14 +284,14 @@ function salvarGrafo()
 
 	/* Abre conexão com servidor */
 	xmlhttp = new XMLHttpRequest(); 
-	xmlhttp.open( "POST", "http://localhost/salvarGrafos.php", true );
+	xmlhttp.open( "POST", "../salvarGrafos.php", true );
 	xmlhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// Setando Content-type
 	
 	/* Monta o arquivo xml a ser enviado */
 	xmlGrafos = "<?xml version='1.0'?>";
 	for( var i = 0; i < grafos.length; i++ )
 	{
-		xmlGrafos += "\n<GRAFOS>";
+		xmlGrafos += "\n<GRAFO>";
 		var tempVertice = grafos[i].vertice;
 		for( var j = 0; j < tempVertice.length; j++ )
 		{
@@ -303,7 +303,14 @@ function salvarGrafo()
 				xmlGrafos += "\n\t\t<ARESTA>";
 				xmlGrafos += "\n\t\t\t<VALOR>" + tempAresta[k].valor + "</VALOR>";
 				xmlGrafos += "\n\t\t\t<DIRECIONADO>" + tempAresta[k].direcionado + "</DIRECIONADO>";
-				xmlGrafos += "\n\t\t\t<COR>" + tempAresta[k].valor + "</COR>";
+				xmlGrafos += "\n\t\t\t<DESTINO>";
+				var tempVerticeDestino = tempAresta[k].destino;
+				xmlGrafos += "\n\t\t\t\t<VERTICE>";
+				xmlGrafos += "\n\t\t\t\t\t<VALOR>" + tempVerticeDestino.valor + "</VALOR>"
+				xmlGrafos += "\n\t\t\t\t\t<X>" + tempVerticeDestino.x + "</X>"
+				xmlGrafos += "\n\t\t\t\t\t<Y>" + tempVerticeDestino.x + "</Y>"
+				xmlGrafos += "\n\t\t\t\t</VERTICE>";
+				xmlGrafos += "\n\t\t\t</DESTINO>";
 				xmlGrafos += "\n\t\t</ARESTA>";
 			}
 			xmlGrafos += "\n\t\t<X>" + tempVertice[j].x + "</X>";
@@ -312,7 +319,7 @@ function salvarGrafo()
 		}			
 		xmlGrafos += "\n\t<NOME>" + grafos[i].nome + "</NOME>";
 		xmlGrafos += "\n\t<COR>" + grafos[i].cor + "</COR>";
-		xmlGrafos += "\n</GRAFOS>";
+		xmlGrafos += "\n</GRAFO>";
 	}
 
 	/* Envia requisição via método POST */
@@ -322,11 +329,42 @@ function salvarGrafo()
     {
 		if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
 		{
+			//xmlhttp.responseText;
 			var resposta = xmlhttp.responseText;
 			window.alert( resposta );
 		}
     }
+
+	window.open( "../downloadArquivo.php?download=1&nomeArquivo=" + nomeArquivo );
+
 	
+}
+
+function lerGrafo()
+{
+	var nomeArquivo;
+	var xmlhttp;
+	
+	/* Obtem um nome para o arquivo */
+	nomeArquivo = window.prompt( "Digite um nome para o arquivo.", "defaultGrafo" );
+
+	/* Abre conexão com servidor */
+	xmlhttp = new XMLHttpRequest(); 
+	xmlhttp.open( "GET", "../downloadArquivo.php?nomeArquivo=" + nomeArquivo + "&download=0", true );
+	//xmlhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// Setando Content-type
+
+	xmlhttp.send();
+
+	xmlhttp.onreadystatechange = function()
+    {
+		if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+		{
+			//xmlhttp.responseText;
+			var resposta = xmlhttp.responseText;
+			//console.log( resposta );
+			window.alert( resposta );
+		}
+    }
 }
 
 function mouseClick( e )
@@ -364,7 +402,8 @@ function inserirVerticeAuxiliar(e){
 	if(grafos.length > 0){
 		var valor, indiceVertice, tamVertice = vertice.length, nomeEncontrado = true;
 
-		while( nomeEncontrado == true ){
+		while( nomeEncontrado == true )
+		{
 			var valor = window.prompt( "Digite um valor valido para o vertice", "" );
 			if(actGrafo != null ) var mygrafo = window.prompt( "Digite em qual grafo", actGrafo.nome );
 			else var mygrafo = window.prompt( "Digite em qual grafo", "Nao definido" );
@@ -387,7 +426,7 @@ function inserirVerticeAuxiliar(e){
 		}
 		if(ig < grafos.length){
 			tam = grafos[ig].vertice.length;
-			grafos[ig].vertice[ tam ] = new Vertice( valor, e.clientX, e.clientY );
+			grafos[ig].vertice[ tam ] = new Vertice( valor, e.pageX, e.pageY );
 		}
 	}
 }
@@ -445,8 +484,8 @@ function onMouseDown( e )
 		
 		case acoes.moverGrafo:
 			actGrafo = grafoSobMouse(e);
-			iniX = e.clientX;
-			iniY = e.clientY;
+			iniX = e.pageX;
+			iniY = e.pageY;
 			break;
 		}
 	}
@@ -466,8 +505,8 @@ function mouseMove( e )
 		}
 	}
 	posXY.innerHTML += "<br />";
-	posXY.innerHTML += 'Pos X = ' + e.clientX + "<br />";	
-	posXY.innerHTML += 'Pos Y = ' + e.clientY + "<br />";
+	posXY.innerHTML += 'Pos X = ' + e.pageX + "<br />";	
+	posXY.innerHTML += 'Pos Y = ' + e.pageY + "<br />";
 	if( mouseNoCanvas(e) )
 	{
 		switch( acao )
@@ -475,8 +514,8 @@ function mouseMove( e )
 		case acoes.move:
 			if(actNode != null)
 			{
-				actNode.x = e.clientX;
-				actNode.y = e.clientY;
+				actNode.x = e.pageX;
+				actNode.y = e.pageY;
 				atualizarCanvas();
 			}
 			break;
@@ -487,7 +526,7 @@ function mouseMove( e )
 				contexto.beginPath();
 				contexto.strokeStyle = "000000";
 				contexto.moveTo(actNode.x - descCanvasX, actNode.y - descCanvasY);
-				contexto.lineTo(e.clientX - descCanvasX, e.clientY - descCanvasY);
+				contexto.lineTo(e.pageX - descCanvasX, e.pageY - descCanvasY);
 				contexto.stroke();
 				contexto.closePath();
 				atualizarCanvas();			
@@ -497,10 +536,10 @@ function mouseMove( e )
 		case acoes.moverGrafo:
 			if(actGrafo != null )
 			{
-				var x = iniX - e.clientX;
-				var y = iniY - e.clientY;
-				iniX = e.clientX;
-				iniY = e.clientY;
+				var x = iniX - e.pageX;
+				var y = iniY - e.pageY;
+				iniX = e.pageX;
+				iniY = e.pageY;
 				for(var i = 0; i < actGrafo.vertice.length; i++ ){
 					actGrafo.vertice[i].x -= x;
 					actGrafo.vertice[i].y -= y;
@@ -564,7 +603,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 }
 
 function mouseNoCanvas(e){
-	if(e.clientX > descCanvasX && e.clientX < (larguraCanvas+descCanvasX) && e.clientY < (alturaCanvas+descCanvasY) && e.clientY > descCanvasY ){
+	if(e.pageX > descCanvasX && e.pageX < (larguraCanvas+descCanvasX) && e.pageY < (alturaCanvas+descCanvasY) && e.pageY > descCanvasY ){
 		return true;
 	}
 	else{
@@ -577,7 +616,7 @@ function grafoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.clientX > grafos[ig].vertice[indice].x - 25 && e.clientX < grafos[ig].vertice[indice].x + 20 && e.clientY > grafos[ig].vertice[indice].y - 20 && e.clientY < grafos[ig].vertice[indice].y + 20 )
+			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
 			{
 				gSelecionado = grafos[ig];
 			}	
@@ -591,7 +630,7 @@ function NoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.clientX > grafos[ig].vertice[indice].x - 25 && e.clientX < grafos[ig].vertice[indice].x + 20 && e.clientY > grafos[ig].vertice[indice].y - 20 && e.clientY < grafos[ig].vertice[indice].y + 20 )
+			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
 			{
 				NoSelecionado = grafos[ig].vertice[indice];
 			}	
@@ -605,7 +644,7 @@ function indiceNoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.clientX > grafos[ig].vertice[indice].x - 25 && e.clientX < grafos[ig].vertice[indice].x + 20 && e.clientY > grafos[ig].vertice[indice].y - 20 && e.clientY < grafos[ig].vertice[indice].y + 20 )
+			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
 			{
 				indiceNoSelecionado = indice;
 			}	
