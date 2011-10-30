@@ -3,11 +3,13 @@
 var canvas = document.getElementById( "canvas" );
 var contexto = canvas.getContext( "2d" );
 var posXY = document.getElementById( "posXY" );
+var scale = 1; // proporção para o zoom
 var xCanvas = 0;
 var yCanvas = 0;
 var larguraCanvas = 1000;
 var alturaCanvas = 500;
 var acao;
+var raio = 20;
 var actNode = null;
 var actGrafo = null;
 var vertice = new Array();
@@ -50,8 +52,8 @@ moverGrafoButton.addEventListener( 'click', moverGrafo, false );
 
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
-window.addEventListener( 'mousedown', onMouseDown, false);
-window.addEventListener( 'mouseup', onMouseUp, false);
+canvas.addEventListener( 'mousedown', onMouseDown, false);
+canvas.addEventListener( 'mouseup', onMouseUp, false);
 
 
 function desenhar_aresta(ox, oy, dx, dy, valor )
@@ -119,49 +121,49 @@ function desenhar_aresta(ox, oy, dx, dy, valor )
 	
 	contexto.beginPath();
 	contexto.lineWidth = 3;
-	contexto.moveTo(ox - descCanvasX, oy - descCanvasY);
-	contexto.lineTo(dx - descCanvasX - disx*29, dy - descCanvasY - disy*29);
+	contexto.moveTo(ox, oy);
+	contexto.lineTo(dx - disx*29, dy - disy*29);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 15;
-	contexto.moveTo(dx - descCanvasX - disx*30, dy - descCanvasY - disy*30);
-	contexto.lineTo(dx - descCanvasX - disx*27, dy - descCanvasY - disy*27);
+	contexto.moveTo(dx - disx*30, dy - disy*30);
+	contexto.lineTo(dx - disx*27, dy - disy*27);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 12;
-	contexto.moveTo(dx - descCanvasX - disx*28, dy - descCanvasY - disy*28);
-	contexto.lineTo(dx - descCanvasX - disx*24, dy - descCanvasY - disy*24);
+	contexto.moveTo(dx - disx*28, dy - disy*28);
+	contexto.lineTo(dx - disx*24, dy - disy*24);
 	contexto.stroke();
 	contexto.closePath();			
 
 	contexto.beginPath();
 	contexto.lineWidth = 9;
-	contexto.moveTo(dx - descCanvasX - disx*25, dy - descCanvasY - disy*25);
-	contexto.lineTo(dx - descCanvasX - disx*21, dy - descCanvasY - disy*21);
+	contexto.moveTo(dx - disx*25, dy - disy*25);
+	contexto.lineTo(dx - disx*21, dy - disy*21);
 	contexto.stroke();
 	contexto.closePath();
 	
 	contexto.beginPath();
 	contexto.lineWidth = 6;
-	contexto.moveTo(dx - descCanvasX - disx*22, dy - descCanvasY - disy*22);
-	contexto.lineTo(dx - descCanvasX - disx*18, dy - descCanvasY - disy*18);
+	contexto.moveTo(dx - disx*22, dy - disy*22);
+	contexto.lineTo(dx - disx*18, dy - disy*18);
 	contexto.stroke();
 	contexto.closePath();
 
 	contexto.beginPath();
 	contexto.lineWidth = 3;
-	contexto.moveTo(dx - descCanvasX - disx*19, dy - descCanvasY - disy*19);
-	contexto.lineTo(dx - descCanvasX - disx*10, dy - descCanvasY - disy*10);
+	contexto.moveTo(dx - disx*19, dy - disy*19);
+	contexto.lineTo(dx - disx*10, dy - disy*10);
 	contexto.stroke();
 	contexto.closePath();
 	
 	contexto.beginPath();
 	contexto.fillStyle = "8b4726";	
-	contexto.fillText( valor, dx - descCanvasX - disx*33, dy - descCanvasY - disy*33 - 15);
+	contexto.fillText( valor, dx - disx*33, dy - disy*33 - 15);
 	contexto.closePath();
 
 }
@@ -176,7 +178,7 @@ function atualizarCanvas( e )
 		for( i = 0; i < numVertices; i++ )
 		{
 			// reposiciona o ponteiro do desenho de volta ao vertice inicial
-			contexto.moveTo( grafos[ig].vertice[i].x - descCanvasX, grafos[ig].vertice[i].y - descCanvasY );
+			contexto.moveTo( grafos[ig].vertice[i].x, grafos[ig].vertice[i].y );
 			
 			var numArestas = grafos[ig].vertice[i].aresta.length;
 			var j;
@@ -196,8 +198,7 @@ function desenharVertice( cor,  v )
 	contexto.fillStyle = "#000000";
 	contexto.strokeStyle = cor;
 	var piRadiando = (Math.PI/180);
-	var raio = 20;
-	contexto.arc( v.x - descCanvasX, v.y - descCanvasY, raio, piRadiando*0, piRadiando*360, false ); 
+	contexto.arc( v.x, v.y, raio, piRadiando*0, piRadiando*360, false ); 
 	contexto.fill();
 	contexto.stroke();
 	contexto.closePath();
@@ -205,7 +206,7 @@ function desenharVertice( cor,  v )
 	contexto.fillStyle = "#FFFFFF";	
 	contexto.textBaseline = "middle";
 	contexto.textAlign = "center";
-	contexto.fillText( v.valor, v.x - descCanvasX, v.y - descCanvasY );
+	contexto.fillText( v.valor, v.x, v.y );
 	
 }
 
@@ -214,7 +215,7 @@ function desenharFundoCanvas()
 {
 
 	contexto.fillStyle = "#aaaaaa";
-	contexto.fillRect( xCanvas, yCanvas, larguraCanvas, alturaCanvas);		
+	contexto.fillRect( xCanvas, yCanvas, larguraCanvas/scale, alturaCanvas/scale );		
 	contexto.lineWidth = 3;
 	contexto.font = "12px serif";
 		
@@ -425,33 +426,30 @@ function achaVerticePorValor( nomeGrafo, valorVertice )
 
 function mouseClick( e )
 {
-	if( mouseNoCanvas(e) )
-	{
+	switch( acao )
+	{	
+	case acoes.inserirVertice:
+		inserirVerticeAuxiliar(e)			
+		atualizarCanvas();
+		break;
 
-		switch( acao )
-		{	
-		case acoes.inserirVertice:
-			inserirVerticeAuxiliar(e)			
-			atualizarCanvas();
-			break;
+	case acoes.deletarVertice:
+		removerVerticeAuxiliar(e);
+		atualizarCanvas();
+		break;	
 
-		case acoes.deletarVertice:
-			removerVerticeAuxiliar(e);
-			atualizarCanvas();
-			break;	
-
-		case acoes.deletarAresta:
-			break;
-			
-		case acoes.selecionarGrafo:
-			if(grafos.length > 0)
-			{
-				actGrafo = grafoSobMouse(e);
-			}
-			break;
+	case acoes.deletarAresta:
+		break;
 		
+	case acoes.selecionarGrafo:
+		if(grafos.length > 0)
+		{
+			actGrafo = grafoSobMouse(e);
 		}
+		break;
+	
 	}
+	
 }
 
 function inserirVerticeAuxiliar(e){
@@ -487,7 +485,7 @@ function inserirVerticeAuxiliar(e){
 		if(ig < grafos.length)
 		{
 			tam = grafos[ig].vertice.length;
-			grafos[ig].vertice[ tam ] = new Vertice( valor, e.pageX, e.pageY );
+			grafos[ig].vertice[ tam ] = new Vertice( valor, getMouseX(e), getMouseY(e) );
 		}
 	}
 }
@@ -529,27 +527,25 @@ var iniX, iniY;
 function onMouseDown( e )
 {
 	var numVertices = vertice.length;
-	if( mouseNoCanvas(e) )
-	{
-
-		switch( acao )
-		{
-		case acoes.move:
-			actNode = NoSobMouse(e);
-			break;
-
-		case acoes.inserirAresta:
-			actNode = NoSobMouse(e);
-			actGrafo = grafoSobMouse(e);
-			break;
 		
-		case acoes.moverGrafo:
-			actGrafo = grafoSobMouse(e);
-			iniX = e.pageX;
-			iniY = e.pageY;
-			break;
-		}
+	switch( acao )
+	{
+	case acoes.move:
+		actNode = NoSobMouse(e);
+		break;
+
+	case acoes.inserirAresta:
+		actNode = NoSobMouse(e);
+		actGrafo = grafoSobMouse(e);
+		break;
+	
+	case acoes.moverGrafo:
+		actGrafo = grafoSobMouse(e);
+		iniX = getMouseX(e);
+		iniY = getMouseY(e);
+		break;
 	}
+	
 }
 
 function mouseMove( e )
@@ -566,111 +562,96 @@ function mouseMove( e )
 		}
 	}
 	posXY.innerHTML += "<br />";
-	posXY.innerHTML += 'Pos X = ' + e.pageX + "<br />";	
-	posXY.innerHTML += 'Pos Y = ' + e.pageY + "<br />";
-	if( mouseNoCanvas(e) )
+	posXY.innerHTML += 'Pos X = ' + getMouseX(e) + "<br />";	
+	posXY.innerHTML += 'Pos Y = ' + getMouseY(e) + "<br />";
+	
+	switch( acao )
 	{
-		switch( acao )
+	case acoes.move:
+		if(actNode != null)
 		{
-		case acoes.move:
-			if(actNode != null)
-			{
-				actNode.x = e.pageX;
-				actNode.y = e.pageY;
-				atualizarCanvas();
-			}
-			break;
-
-		case acoes.inserirAresta:
-			if(actNode != null)
-			{
-				atualizarCanvas();
-				contexto.beginPath();
-				contexto.strokeStyle = "000000";
-				contexto.moveTo(actNode.x - descCanvasX, actNode.y - descCanvasY);
-				contexto.lineTo(e.pageX - descCanvasX, e.pageY - descCanvasY);
-				contexto.stroke();
-				contexto.closePath();
-							
-			}
-			break;
-		
-		case acoes.moverGrafo:
-			if(actGrafo != null )
-			{
-				var x = iniX - e.pageX;
-				var y = iniY - e.pageY;
-				iniX = e.pageX;
-				iniY = e.pageY;
-				for(var i = 0; i < actGrafo.vertice.length; i++ ){
-					actGrafo.vertice[i].x -= x;
-					actGrafo.vertice[i].y -= y;
-				}
-				atualizarCanvas();
-			}
-			break;
+			actNode.x = getMouseX(e);
+			actNode.y = getMouseY(e);
+			atualizarCanvas();
 		}
+		break;
+
+	case acoes.inserirAresta:
+		if(actNode != null)
+		{
+			atualizarCanvas();
+			contexto.beginPath();
+			contexto.strokeStyle = "000000";
+			contexto.moveTo( actNode.x, actNode.y );
+			contexto.lineTo(getMouseX(e), getMouseY(e));
+			contexto.stroke();
+			contexto.closePath();
+						
+		}
+		break;
+	
+	case acoes.moverGrafo:
+		if(actGrafo != null )
+		{
+			var x = iniX - getMouseX(e);
+			var y = iniY - getMouseY(e);
+			iniX = getMouseX(e);
+			iniY = getMouseY(e);
+			for(var i = 0; i < actGrafo.vertice.length; i++ ){
+				actGrafo.vertice[i].x -= x;
+				actGrafo.vertice[i].y -= y;
+			}
+			atualizarCanvas();
+		}
+		break;
 	}
 }
 
 function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa função que 
 {
-	if( mouseNoCanvas(e) )
+	switch( acao )
 	{
-
-		switch( acao )
+	case acoes.move:
+		if(actNode != null)
 		{
-		case acoes.move:
-			if(actNode != null)
-			{
-				actNode = null;
-			}
-			atualizarCanvas();
-			break;
-
-		case acoes.inserirAresta:
-			if( actNode != null )
-			{
-				var grafoAtual = grafoSobMouse(e);
-				if(grafoAtual == actGrafo)
-				{
-					var origem = actNode;
-					var numVertices = vertice.length;
-					
-					var destino = NoSobMouse(e);
-					if(destino == -1){
-						atualizarCanvas();
-						return;
-					}
-					
-					var i_link = origem.aresta.length;
-					var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
-					origem.aresta[i_link] = new Aresta(valor, 1, destino);
-					atualizarCanvas();	
-				}
-				actNode = null;	
-				atualizarCanvas();
-			}
-			break;
-		case acoes.moverGrafo:
-			if(actGrafo != null)
-			{
-				actGrafo = null;
-			}
-			atualizarCanvas();
-			break;
-		
+			actNode = null;
 		}
-	}
-}
+		atualizarCanvas();
+		break;
 
-function mouseNoCanvas(e){
-	if(e.pageX > descCanvasX && e.pageX < (larguraCanvas+descCanvasX) && e.pageY < (alturaCanvas+descCanvasY) && e.pageY > descCanvasY ){
-		return true;
-	}
-	else{
-		return false;
-	}
+	case acoes.inserirAresta:
+		if( actNode != null )
+		{
+			var grafoAtual = grafoSobMouse(e);
+			if(grafoAtual == actGrafo)
+			{
+				var origem = actNode;
+				var numVertices = vertice.length;
+				
+				var destino = NoSobMouse(e);
+				if(destino == -1){
+					atualizarCanvas();
+					return;
+				}
+				
+				var i_link = origem.aresta.length;
+				var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
+				origem.aresta[i_link] = new Aresta(valor, 1, destino);
+				atualizarCanvas();	
+			}
+			actNode = null;	
+			atualizarCanvas();
+		}
+		break;
+	case acoes.moverGrafo:
+		if(actGrafo != null)
+		{
+			actGrafo = null;
+		}
+		atualizarCanvas();
+		break;
+	
+	}	
 }
 
 function grafoSobMouse(e){
@@ -678,10 +659,18 @@ function grafoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
+			/*if( getMouseX(e) > grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
 			{
 				gSelecionado = grafos[ig];
-			}	
+				break;
+			}*/
+
+			if( Math.pow( getMouseX(e) - grafos[ig].vertice[indice].x, 2) + Math.pow( getMouseY(e) - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
+			{
+				gSelecionado = grafos[ig];
+				break;
+			}
+	
 		}
 	}
 	return gSelecionado;
@@ -692,10 +681,19 @@ function NoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
+			/*if( getMouseX(e) > (grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
 			{
 				NoSelecionado = grafos[ig].vertice[indice];
-			}	
+
+			}
+			*/
+
+			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
+			{
+				NoSelecionado = grafos[ig].vertice[indice];
+				break;
+			}
+	
 		}
 	}
 	return NoSelecionado;
@@ -706,11 +704,47 @@ function indiceNoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( e.pageX > grafos[ig].vertice[indice].x - 25 && e.pageX < grafos[ig].vertice[indice].x + 20 && e.pageY > grafos[ig].vertice[indice].y - 20 && e.pageY < grafos[ig].vertice[indice].y + 20 )
+			if( getMouseX(e) > grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
 			{
 				indiceNoSelecionado = indice;
 			}	
 		}
 	}
 	return indiceNoSelecionado;
+}
+
+/* Função que calcula o scale utilizado em desenharFundoCanvars para implementa o zoom in e o zoom out */
+canvas.onmousewheel = function (event)
+{
+    var mousex = getMouseX(event);
+    var mousey = getMouseY(event);
+    var wheel = event.wheelDelta/120;//n or -n
+
+    var zoom = 1 + wheel/2;
+
+    //contexto.translate( xCanvas, yCanvas );
+	contexto.translate( -larguraCanvas/2, -alturaCanvas/2 );
+
+    contexto.scale(zoom,zoom);
+
+	contexto.translate( larguraCanvas/2, alturaCanvas/2 );
+
+    //contexto.translate( -( mousex / scale + xCanvas - mousex / ( scale * zoom ) ), 
+		//-( mousey / scale + yCanvas - mousey / ( scale * zoom ) )  );
+
+    xCanvas = ( mousex / scale + xCanvas - mousex / ( scale * zoom ) );
+    yCanvas = ( mousey / scale + yCanvas - mousey / ( scale * zoom ) );
+    scale *= zoom;
+
+	atualizarCanvas();
+}
+
+function getMouseX( e )
+{
+	return e.pageX - descCanvasX;
+}
+
+function getMouseY( e )
+{
+	return e.pageY - descCanvasY;
 }
