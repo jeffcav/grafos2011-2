@@ -201,7 +201,7 @@ function desenharVertice( cor,  v )
 	contexto.fill();
 	contexto.stroke();
 	contexto.closePath();
-			
+		
 	contexto.fillStyle = "#FFFFFF";	
 	contexto.textBaseline = "middle";
 	contexto.textAlign = "center";
@@ -217,9 +217,7 @@ function desenharFundoCanvas()
 	contexto.fillRect( xCanvas, yCanvas, larguraCanvas, alturaCanvas);		
 	contexto.lineWidth = 3;
 	contexto.font = "12px serif";
-	
-	contexto.fill();
-	contexto.stroke();	
+		
 }
 
 function inserirVertice()
@@ -312,8 +310,6 @@ function salvarGrafo()
 				var tempVerticeDestino = tempAresta[k].destino;
 				xmlGrafos += "\n\t\t\t\t<VERTICEI>";
 				xmlGrafos += "\n\t\t\t\t\t<VALORI>" + tempVerticeDestino.valor + "</VALORI>"
-				xmlGrafos += "\n\t\t\t\t\t<XI>" + tempVerticeDestino.x + "</XI>"
-				xmlGrafos += "\n\t\t\t\t\t<YI>" + tempVerticeDestino.x + "</YI>"
 				xmlGrafos += "\n\t\t\t\t</VERTICEI>";
 				xmlGrafos += "\n\t\t\t</DESTINO>";
 				xmlGrafos += "\n\t\t</ARESTA>";
@@ -345,6 +341,9 @@ function lerGrafo()
 	var nomeArquivo;
 	var xmlhttp;
 	
+	/* Limpa o estado atual */
+	grafos = new Array();
+
 	/* Obtem um nome para o arquivo */
 	nomeArquivo = window.prompt( "Digite um nome para o arquivo.", "defaultGrafo" );
 
@@ -585,13 +584,14 @@ function mouseMove( e )
 		case acoes.inserirAresta:
 			if(actNode != null)
 			{
+				atualizarCanvas();
 				contexto.beginPath();
 				contexto.strokeStyle = "000000";
 				contexto.moveTo(actNode.x - descCanvasX, actNode.y - descCanvasY);
 				contexto.lineTo(e.pageX - descCanvasX, e.pageY - descCanvasY);
 				contexto.stroke();
 				contexto.closePath();
-				atualizarCanvas();			
+							
 			}
 			break;
 		
