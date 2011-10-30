@@ -541,8 +541,8 @@ function onMouseDown( e )
 	
 	case acoes.moverGrafo:
 		actGrafo = grafoSobMouse(e);
-		iniX = getMouseX(e);
-		iniY = getMouseY(e);
+		iniX = (getMouseX(e)+xCanvas)/scale;
+		iniY = (getMouseY(e)+yCanvas)/scale;
 		break;
 	}
 	
@@ -570,8 +570,8 @@ function mouseMove( e )
 	case acoes.move:
 		if(actNode != null)
 		{
-			actNode.x = getMouseX(e);
-			actNode.y = getMouseY(e);
+			actNode.x = (getMouseX(e)+xCanvas)/scale;
+			actNode.y = (getMouseY(e)+yCanvas)/scale;
 			atualizarCanvas();
 		}
 		break;
@@ -583,7 +583,7 @@ function mouseMove( e )
 			contexto.beginPath();
 			contexto.strokeStyle = "000000";
 			contexto.moveTo( actNode.x, actNode.y );
-			contexto.lineTo(getMouseX(e), getMouseY(e));
+			contexto.lineTo( (getMouseX(e)+xCanvas)/scale, (getMouseY(e) +xCanvas)/scale );
 			contexto.stroke();
 			contexto.closePath();
 						
@@ -591,12 +591,12 @@ function mouseMove( e )
 		break;
 	
 	case acoes.moverGrafo:
-		if(actGrafo != null )
+		if( actGrafo != null )
 		{
-			var x = iniX - getMouseX(e);
-			var y = iniY - getMouseY(e);
-			iniX = getMouseX(e);
-			iniY = getMouseY(e);
+			var x = iniX - (getMouseX(e)+xCanvas)/scale;
+			var y = iniY - (getMouseY(e)+yCanvas)/scale;
+			iniX = (getMouseX(e)+xCanvas)/scale;
+			iniY = (getMouseY(e)+yCanvas)/scale;
 			for(var i = 0; i < actGrafo.vertice.length; i++ ){
 				actGrafo.vertice[i].x -= x;
 				actGrafo.vertice[i].y -= y;
@@ -659,13 +659,7 @@ function grafoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			/*if( getMouseX(e) > grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
-			{
-				gSelecionado = grafos[ig];
-				break;
-			}*/
-
-			if( Math.pow( getMouseX(e) - grafos[ig].vertice[indice].x, 2) + Math.pow( getMouseY(e) - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
+			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
 				gSelecionado = grafos[ig];
 				break;
@@ -681,13 +675,6 @@ function NoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			/*if( getMouseX(e) > (grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
-			{
-				NoSelecionado = grafos[ig].vertice[indice];
-
-			}
-			*/
-
 			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
 				NoSelecionado = grafos[ig].vertice[indice];
@@ -722,18 +709,18 @@ canvas.onmousewheel = function (event)
 
     var zoom = 1 + wheel/2;
 
-    //contexto.translate( xCanvas, yCanvas );
-	contexto.translate( -larguraCanvas/2, -alturaCanvas/2 );
+    // contexto.translate( xCanvas, yCanvas );
+	//contexto.translate( larguraCanvas/2, alturaCanvas/2 );
 
     contexto.scale(zoom,zoom);
 
-	contexto.translate( larguraCanvas/2, alturaCanvas/2 );
+	//contexto.translate( -larguraCanvas/2, -alturaCanvas/2 );
 
     //contexto.translate( -( mousex / scale + xCanvas - mousex / ( scale * zoom ) ), 
 		//-( mousey / scale + yCanvas - mousey / ( scale * zoom ) )  );
 
-    xCanvas = ( mousex / scale + xCanvas - mousex / ( scale * zoom ) );
-    yCanvas = ( mousey / scale + yCanvas - mousey / ( scale * zoom ) );
+    //xCanvas = ( mousex / scale + xCanvas - mousex / ( scale * zoom ) );
+    //yCanvas = ( mousey / scale + yCanvas - mousey / ( scale * zoom ) );
     scale *= zoom;
 
 	atualizarCanvas();
