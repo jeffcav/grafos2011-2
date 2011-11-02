@@ -31,6 +31,7 @@ var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
 var moverGrafoButton = document.getElementById("moverGrafo");
 var zoomInButton = document.getElementById("zoomIn");
 var zoomOutButton = document.getElementById("zoomOut");
+var bProfundidade = document.getElementById("bProfundidade");
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -50,6 +51,7 @@ deletarGrafoButton.addEventListener('click', removerGrafo, false);
 moverGrafoButton.addEventListener( 'click', moverGrafo, false );
 zoomInButton.addEventListener('click', menosZoom, false);
 zoomOutButton.addEventListener('click', maisZoom, false);
+bProfundidade.addEventListener('click', configBuscaProfundidade, false);
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
@@ -198,11 +200,11 @@ function atualizarCanvas( e )
 	}
 }
 
-function desenharVertice( cor,  v )
+function desenharVertice( corGrafo,  v )
 {
 	contexto.beginPath();
-	contexto.fillStyle = "#000000";
-	contexto.strokeStyle = cor;
+	contexto.fillStyle = v.cor;
+	contexto.strokeStyle = corGrafo;
 	var piRadiando = (Math.PI/180);
 	contexto.arc( v.x, v.y, raio, piRadiando*0, piRadiando*360, false ); 
 	contexto.fill();
@@ -420,7 +422,7 @@ function lerGrafo()
     }
 }
 
-function achaVerticePorValor( nomeGrafo, valorVertice )
+function achaVerticePorValor( nomeGrafo, valorVertice )	// deve ser trocado por um vetor de chave por valor
 {
 	for( var i = 0; i < grafos.length; i++ )
 	{
@@ -758,4 +760,13 @@ function getMouseX( e )
 function getMouseY( e )
 {
 	return e.pageY - descCanvasY;
+}
+
+/* Interface para os algorítimos */
+
+function configBuscaProfundidade(e)
+{	
+	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
+	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
+	buscaProfundidade( actGrafo, verticeOrigem, verticeDestino );
 }
