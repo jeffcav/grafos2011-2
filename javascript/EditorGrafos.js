@@ -56,8 +56,14 @@ canvas.addEventListener( 'mousedown', onMouseDown, false);
 canvas.addEventListener( 'mouseup', onMouseUp, false);
 
 
-function desenhar_aresta(ox, oy, dx, dy, valor )
+function desenharAresta( verticeOrigem, verticeDestino, aresta )
 {
+	var ox = verticeOrigem.x;
+	var oy = verticeOrigem.y;
+	var dx = verticeDestino.x;
+	var dy = verticeDestino.y;
+	var valor = aresta.valor;	
+
 	var disx = ox - dx;
 	var disy = oy - dy;
 	if( disx >= 0 && disy >= 0 )
@@ -117,7 +123,7 @@ function desenhar_aresta(ox, oy, dx, dy, valor )
 		}
 	}
 	
-	contexto.strokeStyle = "000000";	
+	contexto.strokeStyle = aresta.cor;	
 	
 	contexto.beginPath();
 	contexto.lineWidth = 3;
@@ -162,7 +168,7 @@ function desenhar_aresta(ox, oy, dx, dy, valor )
 	contexto.closePath();
 	
 	contexto.beginPath();
-	contexto.fillStyle = "8b4726";	
+	contexto.fillStyle = aresta.cor;	
 	contexto.fillText( valor, dx - disx*33, dy - disy*33 - 15);
 	contexto.closePath();
 
@@ -184,7 +190,7 @@ function atualizarCanvas( e )
 			var j;
 			for( j = 0; j < numArestas; j++ )
 			{
-				desenhar_aresta(grafos[ig].vertice[i].x, grafos[ig].vertice[i].y, grafos[ig].vertice[i].aresta[j].destino.x, grafos[ig].vertice[i].aresta[j].destino.y, grafos[ig].vertice[i].aresta[j].valor);
+				desenharAresta( grafos[ig].vertice[i], grafos[ig].vertice[i].aresta[j].destino, grafos[ig].vertice[i].aresta[j] );
 			}
 			
 			desenharVertice(grafos[ig].cor, grafos[ig].vertice[i]);	
@@ -293,12 +299,13 @@ function salvarGrafo()
 	{		
 		xmlGrafos += "\n<GRAFO>";
 		xmlGrafos += "\n\t<NOME>" + grafos[i].nome + "</NOME>";
-		xmlGrafos += "\n\t<COR>" + grafos[i].cor + "</COR>";
+		xmlGrafos += "\n\t<CORGRAFO>" + grafos[i].cor + "</CORGRAFO>";
 		var tempVertice = grafos[i].vertice;
 		for( var j = 0; j < tempVertice.length; j++ )
 		{
 			xmlGrafos += "\n\t<VERTICE>";
 			xmlGrafos += "\n\t\t<VALOR>" + tempVertice[j].valor + "</VALOR>";
+			xmlGrafos += "\n\t\t<CORVERTICE>" + tempVertice[j].cor + "</CORVERTICE>";
 			xmlGrafos += "\n\t\t<X>" + tempVertice[j].x + "</X>";
 			xmlGrafos += "\n\t\t<Y>" + tempVertice[j].y + "</Y>";
 			var tempAresta = tempVertice[j].aresta;
@@ -306,6 +313,7 @@ function salvarGrafo()
 			{
 				xmlGrafos += "\n\t\t<ARESTA>";
 				xmlGrafos += "\n\t\t\t<VALOR>" + tempAresta[k].valor + "</VALOR>";
+				xmlGrafos += "\n\t\t\t<CORARESTA>" + tempAresta[k].cor + "</CORARESTA>";
 				xmlGrafos += "\n\t\t\t<DIRECIONADO>" + tempAresta[k].direcionado + "</DIRECIONADO>";
 				xmlGrafos += "\n\t\t\t<DESTINO>";
 				var tempVerticeDestino = tempAresta[k].destino;
@@ -364,7 +372,7 @@ function lerGrafo()
 			for( var i = 0; i < tempGrafo.length; i++ )
 			{				
 				var tempNome = tempGrafo[i].getElementsByTagName("NOME")[0].firstChild.nodeValue;
-				var tempCor = tempGrafo[i].getElementsByTagName("COR")[0].firstChild.nodeValue;
+				var tempCor = tempGrafo[i].getElementsByTagName("CORGRAFO")[0].firstChild.nodeValue;
 				var grafo = new Grafo( tempNome, tempCor ); 
 				grafos.push( grafo );
 					
@@ -373,9 +381,10 @@ function lerGrafo()
 				{
 				
 					var tempValor = tempVertice[j].getElementsByTagName("VALOR")[0].firstChild.nodeValue;
+					var tempCorVertice = tempVertice[j].getElementsByTagName("CORVERTICE")[0].firstChild.nodeValue;
 					var tempX = parseInt( tempVertice[j].getElementsByTagName("X")[0].firstChild.nodeValue );
 					var tempY = parseInt( tempVertice[j].getElementsByTagName("Y")[0].firstChild.nodeValue );
-					grafo.vertice.push( new Vertice( tempValor, tempX, tempY) );
+					grafo.vertice.push( new Vertice( tempValor, tempX, tempY, tempCorVertice) );
 						
 				}
 				
@@ -395,9 +404,10 @@ function lerGrafo()
 					{
 						var tempValorAresta = tempAresta[k].getElementsByTagName("VALOR")[0].firstChild.nodeValue;
 						var tempValorVerticeDestino = tempAresta[k].getElementsByTagName("VALORI")[0].firstChild.nodeValue;
+						var tempCorAresta = tempAresta[k].getElementsByTagName("CORARESTA")[0].firstChild.nodeValue;
 						var tempDirecionado = parseInt( tempAresta[k].getElementsByTagName("DIRECIONADO")[0].firstChild.nodeValue );
 						var verticeDestino = achaVerticePorValor( tempNome, tempValorVerticeDestino );
-						var novaAresta = new Aresta( tempValorAresta, tempDirecionado, verticeDestino );
+						var novaAresta = new Aresta( tempValorAresta, tempDirecionado, verticeDestino, tempCorAresta );
 						verticeOrigem.aresta.push( novaAresta );
 					}
 																		
@@ -485,7 +495,7 @@ function inserirVerticeAuxiliar(e){
 		if(ig < grafos.length)
 		{
 			tam = grafos[ig].vertice.length;
-			grafos[ig].vertice[ tam ] = new Vertice( valor, getMouseX(e), getMouseY(e) );
+			grafos[ig].vertice[ tam ] = new Vertice( valor, getMouseX(e)/scale, getMouseY(e)/scale );
 		}
 	}
 }
