@@ -29,6 +29,8 @@ var criarGrafoButton = document.getElementById( "criaGrafo" );
 var deletarGrafoButton = document.getElementById( "deletaGrafo" );
 var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
 var moverGrafoButton = document.getElementById("moverGrafo");
+var zoomInButton = document.getElementById("zoomIn");
+var zoomOutButton = document.getElementById("zoomOut");
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -37,19 +39,17 @@ const descCanvasY = canvas.offsetTop;
 /* Escutas de eventos */
 window.addEventListener( 'load', atualizarCanvas, false );
 window.addEventListener( 'load', mouseMove, false );
-
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
 deletarVertice.addEventListener('click', removerVertice, false);
 moverButton.addEventListener( 'click', mover, false );
 salvar.addEventListener( 'click', salvarGrafo, false );
 ler.addEventListener( 'click', lerGrafo, false );
-
 criarGrafoButton.addEventListener( 'click', inserirGrafo, false );
 deletarGrafoButton.addEventListener('click', removerGrafo, false);
 moverGrafoButton.addEventListener( 'click', moverGrafo, false );
-
-
+zoomInButton.addEventListener('click', menosZoom, false);
+zoomOutButton.addEventListener('click', maisZoom, false);
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
@@ -691,9 +691,10 @@ function indiceNoSobMouse(e){
 	for(ig = 0; ig < grafos.length; ig++ ){
 		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
 		{
-			if( getMouseX(e) > grafos[ig].vertice[indice].x - 25 && getMouseX(e) < grafos[ig].vertice[indice].x + 20 && getMouseY(e) > grafos[ig].vertice[indice].y - 20 && getMouseY(e) < grafos[ig].vertice[indice].y + 20 )
+			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
 				indiceNoSelecionado = indice;
+				break;
 			}	
 		}
 	}
@@ -707,20 +708,33 @@ canvas.onmousewheel = function (event)
     var mousey = getMouseY(event);
     var wheel = event.wheelDelta/120;//n or -n
 
-    var zoom = 1 + wheel/2;
-
-    // contexto.translate( xCanvas, yCanvas );
-	//contexto.translate( larguraCanvas/2, alturaCanvas/2 );
+	
+    var zoom = 1 + wheel/16;
 
     contexto.scale(zoom,zoom);
 
-	//contexto.translate( -larguraCanvas/2, -alturaCanvas/2 );
+    scale *= zoom;
 
-    //contexto.translate( -( mousex / scale + xCanvas - mousex / ( scale * zoom ) ), 
-		//-( mousey / scale + yCanvas - mousey / ( scale * zoom ) )  );
+	atualizarCanvas();
+}
 
-    //xCanvas = ( mousex / scale + xCanvas - mousex / ( scale * zoom ) );
-    //yCanvas = ( mousey / scale + yCanvas - mousey / ( scale * zoom ) );
+function maisZoom( e )
+{
+	var zoom = 1.05; // 1 + 0,05
+
+	contexto.scale(zoom,zoom);
+
+    scale *= zoom;
+
+	atualizarCanvas();
+}
+
+function menosZoom( e )
+{
+	var zoom = 0.95; // 1 - 0,05
+
+	contexto.scale(zoom,zoom);
+
     scale *= zoom;
 
 	atualizarCanvas();
