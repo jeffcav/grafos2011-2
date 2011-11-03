@@ -31,7 +31,9 @@ var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
 var moverGrafoButton = document.getElementById("moverGrafo");
 var zoomInButton = document.getElementById("zoomIn");
 var zoomOutButton = document.getElementById("zoomOut");
+var mergeButton = document.getElementById("merge");
 var bProfundidade = document.getElementById("bProfundidade");
+
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -48,9 +50,11 @@ salvar.addEventListener( 'click', salvarGrafo, false );
 ler.addEventListener( 'click', lerGrafo, false );
 criarGrafoButton.addEventListener( 'click', inserirGrafo, false );
 deletarGrafoButton.addEventListener('click', removerGrafo, false);
+selecionarGrafoButton.addEventListener('click', seleGrafo, false);
 moverGrafoButton.addEventListener( 'click', moverGrafo, false );
 zoomInButton.addEventListener('click', menosZoom, false);
 zoomOutButton.addEventListener('click', maisZoom, false);
+mergeButton.addEventListener('click', mesclarGrafo, false);
 bProfundidade.addEventListener('click', configBuscaProfundidade, false);
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
@@ -263,7 +267,7 @@ function moverGrafo()
 	acao = acoes.moverGrafo;
 }
 
-function selecionarGrafo()
+function seleGrafo()
 {
 	acao = acoes.selecionarGrafo;
 }
@@ -278,6 +282,24 @@ function removerGrafo()
 		}
 	}
 	atualizarCanvas();
+}
+
+function mesclarGrafo(){
+	var nome1 = window.prompt( "Digite o nome do primeiro grafo", "" );
+	var nome2 = window.prompt( "Digite o nome do segundo grafo", "" );
+	var grafo1;
+	var grafo2;
+	for(var ig = 0; ig < grafos.length; ig++){
+		if(grafos[ig].nome == nome1){
+			grafo1 = grafos[ig];
+		}
+		if(grafos[ig].nome == nome2){
+			grafo2 = grafos[ig];
+			grafos.splice(ig, 1);
+		}
+	}
+	mesclar(grafo1, grafo2);
+	atualizarCanvas();	
 }
 
 function salvarGrafo()
@@ -485,7 +507,7 @@ function inserirVerticeAuxiliar(e){
 			}
 		}
 
-		valor = padraoValorVertice.exec(valor);	
+		//valor = padraoValorVertice.exec(valor); // não da pra testar  os valores com isso	
 		var ig;
 		for(ig = 0; ig <= grafos.length; ig++)
 		{
