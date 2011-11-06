@@ -33,7 +33,7 @@ var zoomInButton = document.getElementById("zoomIn");
 var zoomOutButton = document.getElementById("zoomOut");
 var mergeButton = document.getElementById("merge");
 var bProfundidade = document.getElementById("bProfundidade");
-
+var bLargura = document.getElementById("bLargura");
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -56,6 +56,7 @@ zoomInButton.addEventListener('click', menosZoom, false);
 zoomOutButton.addEventListener('click', maisZoom, false);
 mergeButton.addEventListener('click', mesclarGrafo, false);
 bProfundidade.addEventListener('click', configBuscaProfundidade, false);
+bLargura.addEventListener('click', configBuscaLargura, false);
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
@@ -282,24 +283,6 @@ function removerGrafo()
 		}
 	}
 	atualizarCanvas();
-}
-
-function mesclarGrafo(){
-	var nome1 = window.prompt( "Digite o nome do primeiro grafo", "" );
-	var nome2 = window.prompt( "Digite o nome do segundo grafo", "" );
-	var grafo1;
-	var grafo2;
-	for(var ig = 0; ig < grafos.length; ig++){
-		if(grafos[ig].nome == nome1){
-			grafo1 = grafos[ig];
-		}
-		if(grafos[ig].nome == nome2){
-			grafo2 = grafos[ig];
-			grafos.splice(ig, 1);
-		}
-	}
-	mesclar(grafo1, grafo2);
-	atualizarCanvas();	
 }
 
 function salvarGrafo()
@@ -790,5 +773,31 @@ function configBuscaProfundidade(e)
 {	
 	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
 	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
-	buscaProfundidade( actGrafo, verticeOrigem, verticeDestino );
+	buscaProfundidade( verticeOrigem, verticeDestino );
+}
+
+function configBuscaLargura(e)
+{	
+	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
+	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
+	buscaLargura( verticeOrigem, verticeDestino );
+}
+
+
+function mesclarGrafo(){
+	var nome1 = window.prompt( "Digite o nome do primeiro grafo", "" );
+	var nome2 = window.prompt( "Digite o nome do segundo grafo", "" );
+	var grafo1;
+	var grafo2;
+	for(var ig = 0; ig < grafos.length; ig++){
+		if(grafos[ig].nome == nome1){
+			grafo1 = grafos[ig];
+		}
+		if(grafos[ig].nome == nome2){
+			grafo2 = grafos[ig];
+			grafos.splice(ig, 1);
+		}
+	}
+	mesclar(grafo1, grafo2);
+	atualizarCanvas();	
 }

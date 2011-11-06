@@ -2,7 +2,7 @@
 *
 * Esta função implementa o agorítimo de busca em profundidadde em um determinado grafo
 *
-* @param grafo O grafo a ser aplicado o algorítimo
+* @param grafo O grafo a ser aplicado o algorítmo
 * @param[in] verticeOrigem vertice de onde começa a busca
 * @param[in] verticeDestino vertice a ser procurado
 *
@@ -13,7 +13,7 @@
 
 function buscaProfundidade( verticeOrigem, verticeDestino )
 {
-	var corOriginal = "#000000"
+	var corOriginal = "#000000";
 	var corDestino = "#FF2400";
 	var corCaminho = "#009900";
 	var pilha = new Array();
@@ -38,6 +38,56 @@ function buscaProfundidade( verticeOrigem, verticeDestino )
 			if( verticeVizinho.cor == corOriginal )
 			{
 				pilha.push( verticeVizinho );
+			}
+		}	
+		
+		tempVertice.cor = corCaminho;
+						
+	}
+
+	atualizarCanvas();
+}
+
+/** @brief Busca em Largura
+*
+* Esta função implementa o agorítimo de busca em largura em um determinado grafo
+*
+* @param grafo O grafo a ser aplicado o algorítmo
+* @param[in] verticeOrigem vertice de onde começa a busca
+* @param[in] verticeDestino vertice a ser procurado
+*
+* @return 
+*
+* @remarks Essa função não pode ser chamada antes de configBuscaProfundidade.
+*/
+
+function buscaLargura( verticeOrigem, verticeDestino )
+{
+	var corOriginal = "#000000";
+	var corDestino = "#FF2400";
+	var corCaminho = "#009900";
+	var fila = new Array();
+			
+	fila.push( verticeOrigem );
+
+	while( fila.length > 0 )
+	{
+		var tempVertice = fila.shift();
+		tempVertice.cor = corDestino;
+
+		if( tempVertice == verticeDestino )
+		{			
+			break;
+		}
+			
+		var conjAresta = tempVertice.aresta;
+		for( var i in conjAresta )
+		{
+			var tempAresta = conjAresta[i];			
+			var verticeVizinho = tempAresta.destino;
+			if( verticeVizinho.cor == corOriginal )
+			{
+				fila.push( verticeVizinho );
 			}
 		}	
 		
