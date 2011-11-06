@@ -100,9 +100,9 @@ function buscaLargura( verticeOrigem, verticeDestino )
 
 function mesclar(grafo1, grafo2)
 {
-	for(var i = 0; i < grafo1.vertice.length; i++)
+	for( var i in  grafo1.vertice )
 	{
-		for(var j = 0; j < grafo2.vertice.length; j++)
+		for( var j in grafo2.vertice )
 		{
 			if(grafo1.vertice[i].valor == grafo2.vertice[j].valor)
 			{
@@ -111,26 +111,20 @@ function mesclar(grafo1, grafo2)
 			}
 		}
 	}
-	for(var j = 0; j < grafo2.vertice.length; j++)
+	for( var j in grafo2.vertice )
 	{
 		if(grafo2.vertice[j].x != null)
 		{
 			var tam = grafo1.vertice.length;
-			grafo1.vertice[tam] = grafo2.vertice[j];
+			grafo1.vertice[ grafo2.vertice[j].valor] = grafo2.vertice[j];
 		}
 	}
-	for(var i = 0; i < grafo2.vertice.length; i++)
+	for(var i in grafo2.vertice)
 	{
-		for(var j = 0; j < grafo2.vertice[i].aresta.length; j++ )
+		for( j in grafo2.vertice[i].aresta)
 		{
 			if(grafo2.vertice[i].aresta[j].destino.x == null){
-				for(var k = 0; k < grafo1.vertice.length; k++)
-				{
-					if(grafo1.vertice[k].valor == grafo2.vertice[i].aresta[j].destino.valor)
-					{
-						grafo2.vertice[i].aresta[j].destino = grafo1.vertice[k];
-					}
-				}
+				grafo2.vertice[i].aresta[j].destino = grafo1.vertice[grafo2.vertice[i].aresta[j].destino.valor];
 			}
 		}
 	}
@@ -139,16 +133,13 @@ function mesclar(grafo1, grafo2)
 
 function mesclarArestas(vertice1, vertice2, grafo1)
 {
-	for(var i = 0; i < vertice2.aresta.length; i++)
+	for(var i in vertice2.aresta)
 	{
-		for(var j = 0; j < grafo1.vertice.length; j++)
+		if(grafo1.vertice[vertice2.aresta[i].destino.valor] != 'undefined')
 		{
-			if(vertice2.aresta[i].destino.valor == grafo1.vertice[j].valor  && vertice2.aresta[i].valor != null)
-			{
-				var tam = vertice1.aresta.length;
-				vertice1.aresta[tam] = new Aresta(vertice2.aresta[i].valor, 1, grafo1.vertice[j]);
-				vertice2.aresta[i].valor = null; 
-			}
+			var tam = vertice1.aresta.length;
+			vertice1.aresta[tam] = new Aresta(vertice2.aresta[i].valor, 1, grafo1.vertice[vertice2.aresta[i].destino.valor]);
+			vertice2.aresta[i].valor = null; 
 		}
 	}
 	for(var j = 0; j < vertice2.aresta.length; j++)

@@ -188,7 +188,7 @@ function atualizarCanvas( e )
 	for(var ig = 0; ig < grafos.length; ig++ ){
 		var numVertices = grafos[ig].vertice.length;
 		var i = 0;
-		for( i = 0; i < numVertices; i++ )
+		for(  i in grafos[ig].vertice  )
 		{
 			// reposiciona o ponteiro do desenho de volta ao vertice inicial
 			contexto.moveTo( grafos[ig].vertice[i].x, grafos[ig].vertice[i].y );
@@ -431,7 +431,7 @@ function achaVerticePorValor( nomeGrafo, valorVertice )	// deve ser trocado por 
 {
 	for( var i = 0; i < grafos.length; i++ )
 	{
-		for( var j = 0; j < grafos[i].vertice.length; j++ )
+		for( var j in grafos[i].vertice )
 		{
 			if( grafos[i].nome == nomeGrafo && grafos[i].vertice[j].valor == valorVertice )
 			{
@@ -471,7 +471,7 @@ function mouseClick( e )
 
 function inserirVerticeAuxiliar(e){
 	if(grafos.length > 0){
-		var valor, indiceVertice, tamVertice = vertice.length, nomeEncontrado = true;
+		var valor, ig, indiceVertice, tamVertice = vertice.length, nomeEncontrado = true;
 
 		while( nomeEncontrado == true )
 		{
@@ -479,30 +479,27 @@ function inserirVerticeAuxiliar(e){
 			if(actGrafo != null ) var mygrafo = window.prompt( "Digite em qual grafo", actGrafo.nome );
 			else var mygrafo = window.prompt( "Digite em qual grafo", "Nao definido" );
 			
+			for(ig = 0; ig <= grafos.length; ig++)
+			{
+				if(grafos[ig].nome == mygrafo)
+				{
+					break;
+				}
+			}
+			
 			if( padraoValorVertice.test(valor) == true){
-				
 				nomeEncontrado = false;
-				for(indiceVertice = 0; indiceVertice < vertice.length; indiceVertice++){
-					if(vertice[indiceVertice].valor == valor){
+				for(indiceVertice in grafos[ig].vertice){
+					if(grafos[ig].vertice[indiceVertice].valor == valor){
 						nomeEncontrado = true;
+						window.alert("ja existe um vertice com esse valor!")
 					}
 				}
 			}
 		}
-
-		//valor = padraoValorVertice.exec(valor); // não da pra testar  os valores com isso	
-		var ig;
-		for(ig = 0; ig <= grafos.length; ig++)
-		{
-			if(grafos[ig].nome == mygrafo)
-			{
-				break;
-			}
-		}
 		if(ig < grafos.length)
 		{
-			tam = grafos[ig].vertice.length;
-			grafos[ig].vertice[ tam ] = new Vertice( valor, getMouseX(e)/scale, getMouseY(e)/scale );
+			grafos[ig].vertice[ valor ] = new Vertice( valor, getMouseX(e)/scale, getMouseY(e)/scale );
 		}
 	}
 }
@@ -521,13 +518,13 @@ function removerVerticeAuxiliar(e){
 	verticeADeletar.aresta.splice(0, numLinks);
 	
 	/*remover vertice da estrutura*/
-	myGrafo.vertice.splice(indiceVerticeADeletar, 1);
+	delete(myGrafo.vertice[indiceVerticeADeletar]);
 }
 
 function removerLinksPara(verticeADeletar, myGrafo){
 	var verticeTemp, arestasTemp, indiceVertices, indiceArestas;
 	
-	for(indiceVertices = 0; indiceVertices < myGrafo.vertice.length; indiceVertices++){
+	for(indiceVertices in  myGrafo.vertice ){
 		verticeTemp = myGrafo.vertice[indiceVertices];
 		arestasTemp = verticeTemp.aresta;
 
@@ -614,7 +611,7 @@ function mouseMove( e )
 			var y = iniY - (getMouseY(e)+yCanvas)/scale;
 			iniX = (getMouseX(e)+xCanvas)/scale;
 			iniY = (getMouseY(e)+yCanvas)/scale;
-			for(var i = 0; i < actGrafo.vertice.length; i++ ){
+			for( var i in  actGrafo.vertice ){
 				actGrafo.vertice[i].x -= x;
 				actGrafo.vertice[i].y -= y;
 			}
@@ -674,7 +671,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 function grafoSobMouse(e){
 	var gSelecionado = -1, indice, ig;
 	for(ig = 0; ig < grafos.length; ig++ ){
-		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
+		for( indice in grafos[ig].vertice )
 		{
 			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
@@ -690,7 +687,7 @@ function grafoSobMouse(e){
 function NoSobMouse(e){
 	var NoSelecionado = null, indice, ig;
 	for(ig = 0; ig < grafos.length; ig++ ){
-		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
+		for( indice in grafos[ig].vertice )
 		{
 			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
@@ -706,7 +703,7 @@ function NoSobMouse(e){
 function indiceNoSobMouse(e){
 	var indiceNoSelecionado = -1, indice, ig;
 	for(ig = 0; ig < grafos.length; ig++ ){
-		for( indice=0; indice < grafos[ig].vertice.length; indice++ )
+		for( indice in grafos[ig].vertice)
 		{
 			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
 			{
