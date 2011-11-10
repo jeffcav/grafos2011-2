@@ -14,7 +14,7 @@ var actNode = null;
 var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6};
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 
 
@@ -22,6 +22,7 @@ var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deletaVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
+var deletarArestaButton = document.getElementById("deletaAresta");
 var moverButton = document.getElementById("mover");
 var salvar = document.getElementById("salvar");
 var ler = document.getElementById("ler");
@@ -43,6 +44,7 @@ const descCanvasY = canvas.offsetTop;
 window.addEventListener( 'load', atualizarCanvas, false );
 window.addEventListener( 'load', mouseMove, false );
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
+deletarArestaButton.addEventListener('click', removerAresta, false);
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
 deletarVertice.addEventListener('click', removerVertice, false);
 moverButton.addEventListener( 'click', mover, false );
@@ -247,6 +249,10 @@ function inserirAresta()
 function removerVertice()
 {
 	acao = acoes.deletarVertice;
+}
+
+function removerAresta(){
+	acao = acoes.deletarAresta;
 }
 
 function mover()
@@ -456,8 +462,15 @@ function mouseClick( e )
 		break;	
 
 	case acoes.deletarAresta:
+		removerArestaAuxiliar(e);
+		acao = acoes.deletarArestaIncompleto;
 		break;
 		
+	case acoes.deletarArestaIncompleto:
+		removerArestaAuxiliar(e);
+		acao = acoes.deletarAresta;
+		break;
+	
 	case acoes.selecionarGrafo:
 		if(grafos.length > 0)
 		{
@@ -534,6 +547,28 @@ function removerLinksPara(verticeADeletar, myGrafo){
 			}
 		}
 	}
+}
+
+function removerArestaAuxiliar(e){
+	if(acao == acoes.deletarAresta){
+		grafoVerticeOrigem = grafoSobMouse(e); //Declarando como global
+		verticeOrigem = NoSobMouse(e); //declarando como global
+	}
+	else{
+		var grafoVerticeDestino = grafoSobMouse(e);
+		var verticeDestino = NoSobMouse(e);;
+		if(grafoVerticeOrigem != grafoVerticeDestino){
+			return;
+		}
+		
+		for(iAresta in verticeOrigem.aresta){
+			if(verticeOrigem.aresta[iAresta].destino == verticeDestino ){
+				verticeOrigem.aresta.splice(iAresta, 1);
+				break;
+			}
+		}
+	}
+	
 }
 
 var iniX, iniY;
