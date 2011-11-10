@@ -469,6 +469,7 @@ function mouseClick( e )
 	case acoes.deletarArestaIncompleto:
 		removerArestaAuxiliar(e);
 		acao = acoes.deletarAresta;
+		atualizarCanvas();
 		break;
 	
 	case acoes.selecionarGrafo:
@@ -568,6 +569,7 @@ function removerArestaAuxiliar(e){
 			}
 		}
 	}
+	
 	
 }
 
