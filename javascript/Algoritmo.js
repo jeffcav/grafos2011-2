@@ -2,7 +2,6 @@
 *
 * Esta função implementa o agorítimo de busca em profundidadde em um determinado grafo
 *
-* @param grafo O grafo a ser aplicado o algorítmo
 * @param[in] verticeOrigem vertice de onde começa a busca
 * @param[in] verticeDestino vertice a ser procurado
 *
@@ -42,7 +41,7 @@ function buscaProfundidade( verticeOrigem, verticeDestino )
 		}	
 		
 		tempVertice.cor = corCaminho;
-						
+			
 	}
 
 	atualizarCanvas();
@@ -52,7 +51,6 @@ function buscaProfundidade( verticeOrigem, verticeDestino )
 *
 * Esta função implementa o agorítimo de busca em largura em um determinado grafo
 *
-* @param grafo O grafo a ser aplicado o algorítmo
 * @param[in] verticeOrigem vertice de onde começa a busca
 * @param[in] verticeDestino vertice a ser procurado
 *
@@ -96,6 +94,74 @@ function buscaLargura( verticeOrigem, verticeDestino )
 	}
 
 	atualizarCanvas();
+}
+
+/** @brief Ordenação Topológica
+*
+* Esta função implementa o agorítimo de Ordenação Topológica em um determinado grafo
+*
+* @param[in] conjVertice vetor contendo um conjunto de vétices
+*
+* @return 
+*
+* @remarks Essa função não pode ser chamada antes de configOrdenacaoTopologica.
+*/
+
+function ordenacaoTopologica( conjVertice )
+{
+	var vetorGrau = new Array();	// guarda o grau de cada nó.
+	var fila = new Array();	// fila que auxilia no algoritimo.
+	var vetorOrdTop = new Array();	// vetor resultante com a ordem topologica final.
+
+	for( var i in conjVertice ) // zera o vetorGrau
+	{
+		var vertice = conjVertice[ i ];
+		vetorGrau[ vertice.valor ] = 0;
+	}
+
+	for( var i in conjVertice ) // calcula o grau para cada nó
+	{
+		var vertice = conjVertice[ i ];		
+		for( var j in vertice.aresta )
+		{
+			var aresta = vertice.aresta[ j ];
+			var verticeAdjacente = aresta.destino;
+			vetorGrau[ verticeAdjacente.valor ] += 1;
+		}
+	}
+
+	for( var i in conjVertice ) // procura o nós fontes
+	{
+		var vertice = conjVertice[ i ];
+		if( vetorGrau[ vertice.valor ] == 0 )
+		{
+			fila.push( vertice );
+		}
+	}
+
+	var i = 0;
+	while( fila.length > 0 ) 
+	{
+		var vertice = fila.shift();
+		vetorOrdTop.push( vertice );
+		for( var j in vertice.aresta )
+		{
+			var aresta = vertice.aresta[ j ];
+			var verticeAdjacente = aresta.destino;
+			vetorGrau[ verticeAdjacente.valor ] -= 1;
+			if( vetorGrau[ verticeAdjacente.valor ] == 0 ) // o vértice virou fonte ?
+			{
+				fila.push( verticeAdjacente );
+			}
+		}
+	}
+
+	while( vetorOrdTop.length > 0 ) // debug
+	{		
+		var vertice = vetorOrdTop.shift(); 
+		console.log( vertice.valor );
+	}
+
 }
 
 function mesclar(grafo1, grafo2)
@@ -152,3 +218,14 @@ function mesclarArestas(vertice1, vertice2, grafo1)
 	}
 	
 }
+
+function sleep( milliseconds ) 
+{
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
