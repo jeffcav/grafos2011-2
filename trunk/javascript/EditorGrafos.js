@@ -35,6 +35,7 @@ var zoomOutButton = document.getElementById("zoomOut");
 var mergeButton = document.getElementById("merge");
 var bProfundidade = document.getElementById("bProfundidade");
 var bLargura = document.getElementById("bLargura");
+var ordTopologica = document.getElementById("ordTopologica");
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -59,6 +60,7 @@ zoomOutButton.addEventListener('click', maisZoom, false);
 mergeButton.addEventListener('click', mesclarGrafo, false);
 bProfundidade.addEventListener('click', configBuscaProfundidade, false);
 bLargura.addEventListener('click', configBuscaLargura, false);
+ordTopologica.addEventListener( 'click', configOrdenacaoTopologica, false );
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
@@ -314,7 +316,7 @@ function salvarGrafo()
 		xmlGrafos += "\n\t<NOME>" + grafos[i].nome + "</NOME>";
 		xmlGrafos += "\n\t<CORGRAFO>" + grafos[i].cor + "</CORGRAFO>";
 		var tempVertice = grafos[i].vertice;
-		for( var j = 0; j < tempVertice.length; j++ )
+		for( var j in tempVertice )
 		{
 			xmlGrafos += "\n\t<VERTICE>";
 			xmlGrafos += "\n\t\t<VALOR>" + tempVertice[j].valor + "</VALOR>";
@@ -834,4 +836,10 @@ function mesclarGrafo(){
 	}
 	mesclar(grafo1, grafo2);
 	atualizarCanvas();	
+}
+
+function configOrdenacaoTopologica(e)
+{
+	var conjVertice = actGrafo.vertice;
+	ordenacaoTopologica( conjVertice );
 }
