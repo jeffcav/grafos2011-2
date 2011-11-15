@@ -219,6 +219,148 @@ function mesclarArestas(vertice1, vertice2, grafo1)
 	
 }
 
+function Ligacao(origem, aresta) // estrutura que guarda as ligaçoes do grafo pra ser usada em algorimtos
+{
+	this.origem = origem;
+	this.aresta = aresta;
+}
+
+function ordenar(ligacoes) //por enquanto é um isertion sort, mas depois eu coloco um algoritmo melhor
+{
+	for(var j = 1; j < ligacoes.length; j++) 
+	{
+		var key = ligacoes[j];
+		var i = j - 1;
+		while(i >= 0 && ligacoes[i].aresta.valor > key.aresta.valor) 
+		{
+			ligacoes[i+1] = ligacoes[i];
+			i--;
+		}
+	 
+		ligacoes[i+1] = key;
+	}
+}
+
+function arvoreMinimaKruskal(grafo)
+{
+	var ligacoes = new Array();
+	var i, j, k;
+	
+	for(i in grafo.vertice)
+	{
+		for(j in grafo.vertice[i].aresta)
+		{
+			if( grafo.vertice[i].valor < grafo.vertice[i].aresta[j].destino.valor )
+				ligacoes[ligacoes.length] = new Ligacao(grafo.vertice[i], grafo.vertice[i].aresta[j]);
+		}
+	}
+	
+	ordenar(ligacoes);
+	
+	var raiz = new Array();
+	for(i in grafo.vertice)
+	{
+		raiz[grafo.vertice[i].valor] = grafo.vertice[i].valor;
+	}
+	var NLA = 0;
+	i = 0;
+	while(NLA < (grafo.vertice.length - 1) && i < ligacoes.length)
+	{
+		var lig = ligacoes[i];
+		i++;
+		var vi = lig.origem.valor;
+		var vj = lig.aresta.destino.valor;
+		if(raiz[vi] != raiz[vj])
+		{
+			for( j in raiz)
+			{
+				if(raiz[j] == raiz[vj] && j != vj )
+				{
+					raiz[j] = raiz[vi];
+				}
+			}
+			raiz[vj] = raiz[vi];
+			lig.aresta.cor = 'D2691E';
+			NLA++
+			//sleep(1000);
+			atualizarCanvas();
+			//window.alert("aresta entre: " + vi +  " e " + vj +  " pintada: " + raiz[1] + " " + raiz[2] + " " + raiz[3] + " " + raiz[4] + " " + raiz[5] + " " + raiz[6] + " ." );
+		}
+	}
+}
+
+function caminhoMinimoDjikstra(grafo, node)
+{
+	//window.alert( grafo.nome + " " + node.valor);
+	var dist = new Array();
+	var pred = new Array();
+	var expl = new Array();
+	
+	for(var i in grafo.vertice)
+	{
+		dist[i] = 9999;
+		pred[i] = -1;
+		expl[i] = 0;
+	}
+	dist[node.valor] = 0;
+	//sleep(1000);
+	atualizarCanvas();
+	pred[node.valor] = 0;
+	node.dist = 0;
+	
+	var todosExplorados = false;
+	while(!todosExplorados)
+	{
+		var w = null;
+		for(var i in grafo.vertice)
+		{
+			if(expl[i] == 0)
+			{
+				if( w == null ) 
+				{
+					w = i;
+				}
+				else
+				{
+					if(dist[w] > dist[i])
+					{
+						w = i;
+					}
+					
+				}
+			}
+		}
+		if( w == null )
+		{
+			todosExplorados = true;
+		}
+		else
+		{
+			//window.alert(w);
+			expl[w] = 1;
+			for(var i in grafo.vertice[w].aresta)
+			{
+				
+				var u = grafo.vertice[w].aresta[i].destino.valor;
+				if(expl[u] == 0)
+				{
+					var peso = new Number(grafo.vertice[w].aresta[i].valor);
+					if(dist[u] > dist[w] + peso )
+					{
+						dist[u] = dist[w] + peso;
+						grafo.vertice[u].dist = dist[u];
+						//sleep(1000);
+						atualizarCanvas();
+						pred[u] = w;
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+
 function sleep( milliseconds ) 
 {
   var start = new Date().getTime();
