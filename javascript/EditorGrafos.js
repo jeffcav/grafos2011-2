@@ -14,7 +14,7 @@ var actNode = null;
 var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7};
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 
 
@@ -22,6 +22,7 @@ var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deletaVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
+var criarArestaBiButton = document.getElementById("ligacaoBi");
 var deletarArestaButton = document.getElementById("deletaAresta");
 var moverButton = document.getElementById("mover");
 var salvar = document.getElementById("salvar");
@@ -36,6 +37,8 @@ var mergeButton = document.getElementById("merge");
 var bProfundidade = document.getElementById("bProfundidade");
 var bLargura = document.getElementById("bLargura");
 var ordTopologica = document.getElementById("ordTopologica");
+var kruskal = document.getElementById("kruskal");
+var djikstra = document.getElementById("djikstra");
 
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
@@ -47,6 +50,7 @@ window.addEventListener( 'load', mouseMove, false );
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 deletarArestaButton.addEventListener('click', removerAresta, false);
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
+criarArestaBiButton.addEventListener( 'click', inserirArestaBi, false );
 deletarVertice.addEventListener('click', removerVertice, false);
 moverButton.addEventListener( 'click', mover, false );
 salvar.addEventListener( 'click', salvarGrafo, false );
@@ -61,6 +65,8 @@ mergeButton.addEventListener('click', mesclarGrafo, false);
 bProfundidade.addEventListener('click', configBuscaProfundidade, false);
 bLargura.addEventListener('click', configBuscaLargura, false);
 ordTopologica.addEventListener( 'click', configOrdenacaoTopologica, false );
+kruskal.addEventListener('click', configKruskal, false);
+djikstra.addEventListener('click', configDjikstra, false);
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
@@ -74,114 +80,135 @@ function desenharAresta( verticeOrigem, verticeDestino, aresta )
 	var dx = verticeDestino.x;
 	var dy = verticeDestino.y;
 	var valor = aresta.valor;	
+	if(aresta.direcionado == 1)
+	{
+		
 
-	var disx = ox - dx;
-	var disy = oy - dy;
-	if( disx >= 0 && disy >= 0 )
-	{
-		if( Math.abs( disx ) >= Math.abs( disy ) )
+		var disx = ox - dx;
+		var disy = oy - dy;
+		if( disx >= 0 && disy >= 0 )
 		{
-			disy = -disy/disx;
-			disx = -1;
-					
+			if( Math.abs( disx ) >= Math.abs( disy ) )
+			{
+				disy = -disy/disx;
+				disx = -1;
+						
+			} 
+			else 
+			{
+				disx = -disx/disy;
+				disy = -1;	
+			}
 		} 
-		else 
+		else if( disx >= 0 && disy <= 0 )
 		{
-			disx = -disx/disy;
-			disy = -1;	
+			if( Math.abs( disx ) >= Math.abs( disy ) )
+			{
+				disy = -disy/disx;
+				disx = -1;
+						
+			} 
+			else 
+			{
+				disx = disx/disy;
+				disy = 1;	
+			}				
 		}
-	} 
-	else if( disx >= 0 && disy <= 0 )
-	{
-		if( Math.abs( disx ) >= Math.abs( disy ) )
+		else if( disx <= 0 && disy >= 0 )
 		{
-			disy = -disy/disx;
-			disx = -1;
-					
-		} 
-		else 
-		{
-			disx = disx/disy;
-			disy = 1;	
-		}				
-	}
-	else if( disx <= 0 && disy >= 0 )
-	{
-		if( Math.abs( disx ) >= Math.abs( disy ) )
-		{
-			disy = disy/disx;
-			disx = 1;
-					
-		} 
-		else 
-		{
-			disx = -disx/disy;
-			disy = -1;	
+			if( Math.abs( disx ) >= Math.abs( disy ) )
+			{
+				disy = disy/disx;
+				disx = 1;
+						
+			} 
+			else 
+			{
+				disx = -disx/disy;
+				disy = -1;	
+			}
 		}
+		else
+		{
+			if( Math.abs( disx ) >= Math.abs( disy ) )
+			{
+				disy = disy/disx;
+				disx = 1;
+						
+			} 
+			else 
+			{
+				disx = disx/disy;
+				disy = 1;	
+			}
+		}
+		
+		contexto.strokeStyle = aresta.cor;	
+		
+		contexto.beginPath();
+		contexto.lineWidth = 3;
+		contexto.moveTo(ox, oy);
+		contexto.lineTo(dx - disx*29, dy - disy*29);
+		contexto.stroke();
+		contexto.closePath();
+		
+		contexto.beginPath();
+		contexto.lineWidth = 15;
+		contexto.moveTo(dx - disx*30, dy - disy*30);
+		contexto.lineTo(dx - disx*27, dy - disy*27);
+		contexto.stroke();
+		contexto.closePath();
+
+		contexto.beginPath();
+		contexto.lineWidth = 12;
+		contexto.moveTo(dx - disx*28, dy - disy*28);
+		contexto.lineTo(dx - disx*24, dy - disy*24);
+		contexto.stroke();
+		contexto.closePath();			
+
+		contexto.beginPath();
+		contexto.lineWidth = 9;
+		contexto.moveTo(dx - disx*25, dy - disy*25);
+		contexto.lineTo(dx - disx*21, dy - disy*21);
+		contexto.stroke();
+		contexto.closePath();
+		
+		contexto.beginPath();
+		contexto.lineWidth = 6;
+		contexto.moveTo(dx - disx*22, dy - disy*22);
+		contexto.lineTo(dx - disx*18, dy - disy*18);
+		contexto.stroke();
+		contexto.closePath();
+
+		contexto.beginPath();
+		contexto.lineWidth = 3;
+		contexto.moveTo(dx - disx*19, dy - disy*19);
+		contexto.lineTo(dx - disx*10, dy - disy*10);
+		contexto.stroke();
+		contexto.closePath();
+		
+		contexto.beginPath();
+		contexto.fillStyle = "000000";	
+		contexto.fillText( valor, dx - disx*33, dy - disy*33 - 15);
+		contexto.closePath();
 	}
 	else
 	{
-		if( Math.abs( disx ) >= Math.abs( disy ) )
-		{
-			disy = disy/disx;
-			disx = 1;
-					
-		} 
-		else 
-		{
-			disx = disx/disy;
-			disy = 1;	
-		}
+		contexto.strokeStyle = aresta.cor;	
+		
+		contexto.beginPath();
+		contexto.lineWidth = 3;
+		contexto.moveTo(ox, oy);
+		contexto.lineTo(dx , dy);
+		contexto.stroke();
+		contexto.closePath();
+		
+		contexto.beginPath();
+		contexto.fillStyle = "000000";	
+		contexto.fillText( valor, (ox + dx)/2, (oy + dy)/2 + 15);
+		contexto.closePath();
+		
 	}
-	
-	contexto.strokeStyle = aresta.cor;	
-	
-	contexto.beginPath();
-	contexto.lineWidth = 3;
-	contexto.moveTo(ox, oy);
-	contexto.lineTo(dx - disx*29, dy - disy*29);
-	contexto.stroke();
-	contexto.closePath();
-
-	contexto.beginPath();
-	contexto.lineWidth = 15;
-	contexto.moveTo(dx - disx*30, dy - disy*30);
-	contexto.lineTo(dx - disx*27, dy - disy*27);
-	contexto.stroke();
-	contexto.closePath();
-
-	contexto.beginPath();
-	contexto.lineWidth = 12;
-	contexto.moveTo(dx - disx*28, dy - disy*28);
-	contexto.lineTo(dx - disx*24, dy - disy*24);
-	contexto.stroke();
-	contexto.closePath();			
-
-	contexto.beginPath();
-	contexto.lineWidth = 9;
-	contexto.moveTo(dx - disx*25, dy - disy*25);
-	contexto.lineTo(dx - disx*21, dy - disy*21);
-	contexto.stroke();
-	contexto.closePath();
-	
-	contexto.beginPath();
-	contexto.lineWidth = 6;
-	contexto.moveTo(dx - disx*22, dy - disy*22);
-	contexto.lineTo(dx - disx*18, dy - disy*18);
-	contexto.stroke();
-	contexto.closePath();
-
-	contexto.beginPath();
-	contexto.lineWidth = 3;
-	contexto.moveTo(dx - disx*19, dy - disy*19);
-	contexto.lineTo(dx - disx*10, dy - disy*10);
-	contexto.stroke();
-	contexto.closePath();
-	
-	contexto.beginPath();
-	contexto.fillStyle = aresta.cor;	
-	contexto.fillText( valor, dx - disx*33, dy - disy*33 - 15);
-	contexto.closePath();
 
 }
 
@@ -201,7 +228,17 @@ function atualizarCanvas( e )
 			var j;
 			for( j = 0; j < numArestas; j++ )
 			{
-				desenharAresta( grafos[ig].vertice[i], grafos[ig].vertice[i].aresta[j].destino, grafos[ig].vertice[i].aresta[j] );
+				if(grafos[ig].vertice[i].aresta[j].direcionado  == 0)
+				{
+					if(grafos[ig].vertice[i].valor < grafos[ig].vertice[i].aresta[j].destino.valor)
+					{
+						desenharAresta( grafos[ig].vertice[i], grafos[ig].vertice[i].aresta[j].destino, grafos[ig].vertice[i].aresta[j] );
+					}
+				}
+				else
+				{
+					desenharAresta( grafos[ig].vertice[i], grafos[ig].vertice[i].aresta[j].destino, grafos[ig].vertice[i].aresta[j] );
+				}
 			}
 			
 			desenharVertice(grafos[ig].cor, grafos[ig].vertice[i]);	
@@ -225,6 +262,12 @@ function desenharVertice( corGrafo,  v )
 	contexto.textAlign = "center";
 	contexto.fillText( v.valor, v.x, v.y );
 	
+	if( typeof v.dist != 'undefined' )
+	{
+		contexto.fillStyle = "#8B2323";	
+		contexto.fillText( v.dist, v.x + 25, v.y - 25 );
+	}
+	
 }
 
 
@@ -246,6 +289,11 @@ function inserirVertice()
 function inserirAresta()
 {
 	acao = acoes.inserirAresta;
+}
+
+function inserirArestaBi()
+{
+	acao = acoes.inserirArestaBi;
 }
 
 function removerVertice()
@@ -481,6 +529,20 @@ function mouseClick( e )
 		}
 		break;
 	
+	case acoes.djikstra:
+		if(grafos.length > 0)
+		{
+			actGrafo = grafoSobMouse(e);
+			actNode = NoSobMouse(e);
+			if(actGrafo != -1 && actNode != null )
+			{
+				caminhoMinimoDjikstra(actGrafo, actNode);
+				atualizarCanvas();
+			}
+			actNode = null;
+		}
+		break;
+	
 	}
 	
 }
@@ -566,8 +628,23 @@ function removerArestaAuxiliar(e){
 		
 		for(iAresta in verticeOrigem.aresta){
 			if(verticeOrigem.aresta[iAresta].destino == verticeDestino ){
-				verticeOrigem.aresta.splice(iAresta, 1);
-				break;
+				if(verticeOrigem.aresta[iAresta].direcionado == 1)
+				{
+					verticeOrigem.aresta.splice(iAresta, 1);
+					break;
+				}
+				else
+				{	
+					for(j in verticeDestino.aresta)
+					{
+						if( verticeDestino.aresta[j].destino == verticeOrigem )
+						{
+							verticeDestino.aresta[j].direcionado = 1;
+						}
+					}
+					verticeOrigem.aresta.splice(iAresta, 1);
+					break;
+				}
 			}
 		}
 	}
@@ -588,6 +665,11 @@ function onMouseDown( e )
 		break;
 
 	case acoes.inserirAresta:
+		actNode = NoSobMouse(e);
+		actGrafo = grafoSobMouse(e);
+		break;
+
+	case acoes.inserirArestaBi:
 		actNode = NoSobMouse(e);
 		actGrafo = grafoSobMouse(e);
 		break;
@@ -630,6 +712,20 @@ function mouseMove( e )
 		break;
 
 	case acoes.inserirAresta:
+		if(actNode != null)
+		{
+			atualizarCanvas();
+			contexto.beginPath();
+			contexto.strokeStyle = "000000";
+			contexto.moveTo( actNode.x, actNode.y );
+			contexto.lineTo( (getMouseX(e)+xCanvas)/scale, (getMouseY(e) +xCanvas)/scale );
+			contexto.stroke();
+			contexto.closePath();
+						
+		}
+		break;
+	
+	case acoes.inserirArestaBi:
 		if(actNode != null)
 		{
 			atualizarCanvas();
@@ -696,6 +792,37 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 			atualizarCanvas();
 		}
 		break;
+	
+	case acoes.inserirArestaBi:
+		if( actNode != null )
+		{
+			var grafoAtual = grafoSobMouse(e);
+			if(grafoAtual == actGrafo)
+			{
+				var origem = actNode;
+				
+				var destino = NoSobMouse(e);
+				
+				if(destino == -1){
+					atualizarCanvas();
+					return;
+				}
+				
+				var valor = window.prompt( "Digite o peso do link", "" );	// checar se valor é válido e se já existe
+				
+				var i_link = origem.aresta.length;
+				origem.aresta[i_link] = new Aresta(valor, 0, destino);
+		
+				i_link = destino.aresta.length;
+				destino.aresta[i_link] = new Aresta(valor, 0, origem);
+				
+				atualizarCanvas();	
+			}
+			actNode = null;	
+			atualizarCanvas();
+		}
+		break;	
+
 	case acoes.moverGrafo:
 		if(actGrafo != null)
 		{
@@ -842,4 +969,15 @@ function configOrdenacaoTopologica(e)
 {
 	var conjVertice = actGrafo.vertice;
 	ordenacaoTopologica( conjVertice );
+}
+
+function configKruskal(e)
+{
+	arvoreMinimaKruskal( actGrafo );
+	atualizarCanvas();
+}
+
+function configDjikstra(e)
+{
+	acao = acoes.djikstra;
 }
