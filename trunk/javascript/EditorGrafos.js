@@ -19,7 +19,7 @@ var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 
 
 /* Referencia aos botões */
-var criarVerticeButton = document.getElementById( "criaVertice" );
+/*var criarVerticeButton = document.getElementById( "criaVertice" );
 var deletarVertice = document.getElementById( "deletaVertice" );
 var criarArestaButton = document.getElementById("ligaVertice");
 var criarArestaBiButton = document.getElementById("ligacaoBi");
@@ -39,7 +39,7 @@ var bLargura = document.getElementById("bLargura");
 var ordTopologica = document.getElementById("ordTopologica");
 var kruskal = document.getElementById("kruskal");
 var djikstra = document.getElementById("djikstra");
-
+*/
 /* Constantes */
 const descCanvasX = canvas.offsetLeft;
 const descCanvasY = canvas.offsetTop;
@@ -47,6 +47,7 @@ const descCanvasY = canvas.offsetTop;
 /* Escutas de eventos */
 window.addEventListener( 'load', atualizarCanvas, false );
 window.addEventListener( 'load', mouseMove, false );
+/*
 criarVerticeButton.addEventListener( 'click', inserirVertice, false );
 deletarArestaButton.addEventListener('click', removerAresta, false);
 criarArestaButton.addEventListener( 'click', inserirAresta, false );
@@ -67,6 +68,7 @@ bLargura.addEventListener('click', configBuscaLargura, false);
 ordTopologica.addEventListener( 'click', configOrdenacaoTopologica, false );
 kruskal.addEventListener('click', configKruskal, false);
 djikstra.addEventListener('click', configDjikstra, false);
+*/
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);

@@ -1,9 +1,97 @@
 <html>
 
 <head>
+<title>H5 - Editor de grafos</title>
+
+<script language="JavaScript1.2" type="text/javascript" src="preloadMenu.js"> </script>
+<script language="JavaScript1.2" type="text/javascript" src="mm_css_menu.js"></script>
+<style type="text/css" media="screen">
+	@import url("menu.css.css");
+</style>
 </head>
 
-<body >
+<body onload="MM_preloadImages('../mouse_sobre_seta.png','mouse_sobre_seta.png','mouse_sobre_mesclar.png');">
+	
+<div>
+<img src="imagens/titulo.png" /> 
+</div>
+
+
+	
+<div id="FWTableContainer333835985">
+<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="500">
+<!-- fwtable fwsrc="original.png" fwpage="Page 1" fwbase="menu.css.gif" fwstyle="Dreamweaver" fwdocid = "333835985" fwnested="0" -->
+  <tr>
+   <td><img src="spacer.gif" width="72" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="71" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="74" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="68" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="39" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="72" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="104" height="1" border="0" alt="" /></td>
+   <td><img src="spacer.gif" width="1" height="1" border="0" alt="" /></td>
+  </tr>
+
+  <tr>
+   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110145143_0', 'MMMenu1110145143_0',0,30,'arquivo');"><img name="arquivo" src="arquivo.gif" width="72" height="30" border="0" id="arquivo" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110145014_1', 'MMMenu1110145014_1',0,30,'grafo');"><img name="grafo" src="grafo.gif" width="71" height="30" border="0" id="grafo" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144923_2', 'MMMenu1110144923_2',0,30,'vertice');"><img name="vertice" src="vertice.gif" width="74" height="30" border="0" id="vertice" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144921_3', 'MMMenu1110144921_3',0,30,'aresta');"><img name="aresta" src="aresta.gif" width="68" height="30" border="0" id="aresta" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('seta','','../mouse_sobre_seta.png','seta','','mouse_sobre_seta.png',1);"><img name="seta" src="seta.gif" width="39" height="30" border="0" id="seta" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('mesclar','','mouse_sobre_mesclar.png',1);" onclick="mesclarGrafo();"><img name="mesclar" src="mesclar.gif" width="72" height="30" border="0" id="mesclar" alt="" /></a></td>
+   <td><img name="menucss_r1_c7" src="menu.css_r1_c7.gif" width="104" height="30" border="0" id="menucss_r1_c7" alt="" /></td>
+   <td><img src="spacer.gif" width="1" height="30" border="0" alt="" /></td>
+  </tr>
+</table>
+<div id="MMMenuContainer1110145143_0">
+	<div id="MMMenu1110145143_0" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
+		<a href="javascript:;" id="MMMenu1110145143_0_Item_0" class="MMMIFVStyleMMMenu1110145143_0" onmouseover="MM_menuOverMenuItem('MMMenu1110145143_0');" onclick="salvarGrafo();">
+			Salvar
+		</a>
+		<a href="javascript:;" id="MMMenu1110145143_0_Item_1" class="MMMIVStyleMMMenu1110145143_0" onmouseover="MM_menuOverMenuItem('MMMenu1110145143_0');" onclick="lerGrafo();">
+			Carregar
+		</a>
+	</div>
+</div>
+<div id="MMMenuContainer1110145014_1">
+	<div id="MMMenu1110145014_1" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
+		<a href="javascript:;" id="MMMenu1110145014_1_Item_0" class="MMMIFVStyleMMMenu1110145014_1" onmouseover="MM_menuOverMenuItem('MMMenu1110145014_1');" onclick="inserirGrafo();" >
+			Novo&nbsp;Grafo
+		</a>
+		<a href="javascript:;" id="MMMenu1110145014_1_Item_1" class="MMMIVStyleMMMenu1110145014_1" onmouseover="MM_menuOverMenuItem('MMMenu1110145014_1');" onclick="removerGrafo();" >
+			Deletar&nbsp;Grafo
+		</a>
+	</div>
+</div>
+<div id="MMMenuContainer1110144923_2">
+	<div id="MMMenu1110144923_2" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
+		<a href="javascript:;" id="MMMenu1110144923_2_Item_0" class="MMMIFVStyleMMMenu1110144923_2" onmouseover="MM_menuOverMenuItem('MMMenu1110144923_2');" onclick="inserirVertice();" >
+			Adicionar&nbsp;V&eacute;rtice 
+		</a>
+		<a href="javascript:;" id="MMMenu1110144923_2_Item_1" class="MMMIVStyleMMMenu1110144923_2" onmouseover="MM_menuOverMenuItem('MMMenu1110144923_2');" onclick="removerVertice();" >
+			Remover&nbsp;V&eacute;rtice
+		</a>
+	</div>
+</div>
+<div id="MMMenuContainer1110144921_3">
+	<div id="MMMenu1110144921_3" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
+		<a href="javascript:;" id="MMMenu1110144921_3_Item_0" class="MMMIFVStyleMMMenu1110144921_3" onmouseover="MM_menuOverMenuItem('MMMenu1110144921_3');" onclick="inserirAresta();">
+			Criar&nbsp;Aresta
+		</a>
+		<a href="javascript:;" id="MMMenu1110144921_3_Item_1" class="MMMIVStyleMMMenu1110144921_3" onmouseover="MM_menuOverMenuItem('MMMenu1110144921_3');" onclick="removerAresta();">
+			Remover&nbsp;Aresta
+		</a>
+	</div>
+</div>
+</div>
+	
+	
+	
+
+	
+	
+	<!--
+	
 	
 	<img src="titulo.png" width="400" height="80">
 	<br />
@@ -40,6 +128,7 @@
 
 	<input type="button" value="ordTopologica" id="ordTopologica" />
 	
+	
 	<br />
 
 	<input type="button" value="bProfundidade" id="bProfundidade" />
@@ -48,7 +137,10 @@
 	<input type="button" value="kruskal" id="kruskal" />
 	<input type="button" value="djikstra" id="djikstra" />
 	
+
 	<br />
+	-->
+	
 
 	<canvas id="canvas" width="1000" height="500">	
 	</canvas>
