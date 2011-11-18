@@ -10,7 +10,7 @@
 </style>
 </head>
 
-<body onload="MM_preloadImages('../mouse_sobre_seta.png','mouse_sobre_seta.png','mouse_sobre_mesclar.png');">
+<body onload="MM_preloadImages('mouse_sobre_seta.png','mouse_sobre_seta.png','mouse_sobre_mesclar.png');">
 	
 <div>
 <img src="imagens/titulo.png" /> 
@@ -37,7 +37,7 @@
    <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110145014_1', 'MMMenu1110145014_1',0,30,'grafo');"><img name="grafo" src="grafo.gif" width="71" height="30" border="0" id="grafo" alt="" /></a></td>
    <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144923_2', 'MMMenu1110144923_2',0,30,'vertice');"><img name="vertice" src="vertice.gif" width="74" height="30" border="0" id="vertice" alt="" /></a></td>
    <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144921_3', 'MMMenu1110144921_3',0,30,'aresta');"><img name="aresta" src="aresta.gif" width="68" height="30" border="0" id="aresta" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('seta','','../mouse_sobre_seta.png','seta','','mouse_sobre_seta.png',1);"><img name="seta" src="seta.gif" width="39" height="30" border="0" id="seta" alt="" /></a></td>
+   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('seta','','mouse_sobre_seta.png','seta','','mouse_sobre_seta.png',1);" onclick="selecionar();"><img name="seta" src="seta.gif" width="39" height="30" border="0" id="seta" alt="" /></a></td>
    <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('mesclar','','mouse_sobre_mesclar.png',1);" onclick="mesclarGrafo();"><img name="mesclar" src="mesclar.gif" width="72" height="30" border="0" id="mesclar" alt="" /></a></td>
    <td><img name="menucss_r1_c7" src="menu.css_r1_c7.gif" width="104" height="30" border="0" id="menucss_r1_c7" alt="" /></td>
    <td><img src="spacer.gif" width="1" height="30" border="0" alt="" /></td>
@@ -85,9 +85,9 @@
 </div>
 </div>
 	
+<div id="barraDeFerramentas">
 	
-	
-
+</div>
 	
 	
 	<!--
@@ -146,13 +146,14 @@
 	</canvas>
 	
 	<div id="posXY" ></div>
+	<div id="info" ></div>
 
 	<script type="text/javascript" src="javascript/EditorGrafos.js"></script>
 	<script type="text/javascript" src="javascript/Vertice.js"></script>
 	<script type="text/javascript" src="javascript/Aresta.js"></script>
 	<script type="text/javascript" src="javascript/Grafo.js"></script>
 	<script type="text/javascript" src="javascript/Algoritmo.js"></script>
-
+	<style type="text/css" media="screen"> @import url("css/editorGrafos.css"); </style>
 </body>
 
 </html>
