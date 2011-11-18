@@ -14,9 +14,15 @@ var actNode = null;
 var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9};
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10};
+var estadosBarraDeFerramentas = {"inicial":0, "edicaoDeNo":1};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
+var barraDeFerramentas = document.getElementById( "barraDeFerramentas" );
+var estadoBarraDeFerramentas = 0;
+var noSelecionado = null;
+var grafoSelecionado = null;
 
+carregarBarraDeFerramentas();
 
 /* Referencia aos botões */
 /*var criarVerticeButton = document.getElementById( "criaVertice" );
@@ -283,6 +289,10 @@ function desenharFundoCanvas()
 		
 }
 
+function selecionar(){
+	acao = acoes.selecionar;
+}
+
 function inserirVertice()
 {
 	acao = acoes.inserirVertice;
@@ -543,6 +553,15 @@ function mouseClick( e )
 			}
 			actNode = null;
 		}
+		break;
+		
+	case acoes.selecionar:
+		noSelecionado = NoSobMouse(e);
+		grafoSelecionado = grafoSobMouse(e);
+		if(noSelecionado != null){
+			estadoBarraDeFerramentas = estadosBarraDeFerramentas.edicaoDeNo;
+		}
+		carregarBarraDeFerramentas();
 		break;
 	
 	}
@@ -982,4 +1001,17 @@ function configKruskal(e)
 function configDjikstra(e)
 {
 	acao = acoes.djikstra;
+}
+
+function carregarBarraDeFerramentas(){
+	switch(estadoBarraDeFerramentas){
+	
+	  case estadosBarraDeFerramentas.inicial:
+		barraDeFerramentas.innerHTML = "asd";
+		break;
+	
+	  case estadosBarraDeFerramentas.edicaoDeNo:
+		barraDeFerramentas.innerHTML = "Valor: <input type=\"text\" value=" + noSelecionado.valor + " class=\"caixaDeTexto\" />";
+		break;
+	}
 }
