@@ -1,0 +1,31 @@
+#barraDeFerramentas{
+	background-image:url('../imagens/fundo_barra_ferramentas.png');
+	background-repeat:repeat-x;
+	width:95%;
+	height:40px;
+	border:1px solid black;
+	border-top:2px solid black;
+}
+
+#canvas{
+	border: 1px solid black;
+	width:95%;
+}
+
+#infoNo{
+	
+	width:100px;
+	position:absolute;
+	visibility:hidden;
+	border:1px solid black;
+	background:white;
+	z-index:3;
+}
+.infoNoTextClass{
+	font:verdana;
+}
+
+.infoNoInputClass{
+	position:absolute;
+	width:50px;
+}
