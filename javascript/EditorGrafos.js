@@ -1007,62 +1007,6 @@ function configDjikstra(e)
 	acao = acoes.djikstra;
 }
 
-function exibirInfoNo(){
-	infoNo.innerHTML = 
-	"<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: info.</div>\
-	<label class= \" infoNoTextClass \" >Valor: </label>\
-	<input id= \"valorVertice\" type= \" text \" class= \" infoNoInputClass \" value = " + noSelecionado.valor + " onkeyup= \" mudarValorVertice(); \" /><BR />\
-	<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: liga&ccedil&otildees.</div>\
-	";
-	
-	infoNo.style.left = noSelecionado.x;
-	infoNo.style.top = noSelecionado.y;
-	infoNo.style.visibility = "visible";
-}
-
-function ocultarInfoNo(){
-	infoNo.style.visibility = "hidden";
-}
-
-function mudarValorVertice(){
-	var caixaNovoValor = document.getElementById("valorVertice");
-	var novoValor = caixaNovoValor.value;
-	var testeValor, nomeEncontrado = true;
-	
-	testeValor = testarValorVertice(novoValor);
-	/*
-	if( padraoValorVertice.test(novoValor) == true && novoValor == padraoValorVertice.exec(novoValor)){
-		nomeEncontrado = false;
-		for(indiceVertice in grafoSelecionado.vertice){
-			if(grafoSelecionado.vertice[indiceVertice].valor == novoValor){
-				nomeEncontrado = true;
-			}
-		}
-	}
-	
-	if(nomeEncontrado == true ){
-		caixaNovoValor.style.background = "#FFDFDF";
-	}
-	else{
-		caixaNovoValor.style.background = "#FFFFFF";
-		noSelecionado.valor = padraoValorVertice.exec(novoValor);
-		atualizarCanvas();
-	}
-	*/
-	if(testeValor == false){
-		caixaNovoValor.style.background = "#FFDFDF";
-	}
-	else{
-		caixaNovoValor.style.background = "#FFFFFF";
-		noSelecionado.valor = padraoValorVertice.exec(novoValor);
-		atualizarCanvas();
-	}
-}
-
-function mudarValorAresta(){
-
-}
-
 function testarValorVertice(novoValor){
 	var nomeEncontrado = true;
 	
@@ -1076,4 +1020,69 @@ function testarValorVertice(novoValor){
 	}
 	
 	return (!nomeEncontrado);
+}
+
+function exibirInfoNo(){
+	infoNo.innerHTML = 
+	"<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: info.</div>\
+	<label class= \" infoNoTextClass \" >Valor: </label> \
+	<input id= \"valorVertice\" type= \" text \" class= \" infoNoInputClass \" value = " + noSelecionado.valor + " onkeyup= \" mudarValorVertice(); \" /><BR />\
+	\
+	<br /><div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: liga&ccedil&otildees.</div>";
+	
+	var indice;
+	for(indice = 0; indice < noSelecionado.aresta.length; indice = indice + 1){
+		infoNo.innerHTML += 
+		"<label class = \" infoNoTextClass \" >" + noSelecionado.aresta[indice].destino.valor + ": </label> \
+		<input id= \" valorAresta" + indice + " \" class= \" infoNoInputClass \" value = "+ noSelecionado.aresta[indice].valor +" onkeyup = \" mudarValorAresta("+ indice +")\" > <br />";
+	}
+	
+	infoNo.innerHTML += "<br />"
+	infoNo.style.left = noSelecionado.x;
+	infoNo.style.top = noSelecionado.y;
+	infoNo.style.visibility = "visible";
+	
+}
+
+function ocultarInfoNo(){
+	infoNo.style.visibility = "hidden";
+}
+
+function mudarValorVertice(){
+	var caixaNovoValor = document.getElementById("valorVertice");
+	var novoValor = caixaNovoValor.value;
+	var testeValor = testarValorVertice(novoValor);
+	
+	if(testeValor == false){
+		caixaNovoValor.style.background = "#FFDFDF";
+	}
+	else{
+		caixaNovoValor.style.background = "#FFFFFF";
+		noSelecionado.valor = padraoValorVertice.exec(novoValor);
+		atualizarCanvas();
+	}
+}
+
+function mudarValorAresta(indice){
+	var caixaNovoValor = document.getElementById(" valorAresta"+indice+" ");
+	var novoValor = caixaNovoValor.value;
+	var testeValor = testarValorAresta(novoValor);
+	
+	if(testeValor == false){
+		caixaNovoValor.style.background = "#FFDFDF";
+	}
+	else{
+		caixaNovoValor.style.background = "#FFFFFF";
+		noSelecionado.aresta[indice].valor = novoValor;
+		atualizarCanvas();
+	}
+}
+
+function testarValorAresta(novoValor){
+	if(padraoValorVertice.test(novoValor) == true && novoValor == padraoValorVertice.exec(novoValor)){
+		return true;
+	}
+	else{
+		return false;
+	}
 }
