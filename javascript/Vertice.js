@@ -12,4 +12,5 @@ function Vertice( valor, x, y, cor )
 	this.x = x;
 	this.y = y;
 	this.aresta = new Array();
+	
 }

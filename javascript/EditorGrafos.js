@@ -10,19 +10,16 @@ var larguraCanvas = 1000;
 var alturaCanvas = 500;
 var acao;
 var raio = 20;
-var actNode = null;
+var noSelecionado = null;
 var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
 var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10};
-var estadosBarraDeFerramentas = {"inicial":0, "edicaoDeNo":1};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
-var barraDeFerramentas = document.getElementById( "barraDeFerramentas" );
-var estadoBarraDeFerramentas = 0;
 var noSelecionado = null;
 var grafoSelecionado = null;
+var infoNo = document.getElementById("infoNo");
 
-carregarBarraDeFerramentas();
 
 /* Referencia aos botões */
 /*var criarVerticeButton = document.getElementById( "criaVertice" );
@@ -545,23 +542,28 @@ function mouseClick( e )
 		if(grafos.length > 0)
 		{
 			actGrafo = grafoSobMouse(e);
-			actNode = NoSobMouse(e);
-			if(actGrafo != -1 && actNode != null )
+			noSelecionado = NoSobMouse(e);
+			if(actGrafo != -1 && noSelecionado != null )
 			{
-				caminhoMinimoDjikstra(actGrafo, actNode);
+				caminhoMinimoDjikstra(actGrafo, noSelecionado);
 				atualizarCanvas();
 			}
-			actNode = null;
+			noSelecionado = null;
 		}
 		break;
 		
 	case acoes.selecionar:
 		noSelecionado = NoSobMouse(e);
 		grafoSelecionado = grafoSobMouse(e);
-		if(noSelecionado != null){
-			estadoBarraDeFerramentas = estadosBarraDeFerramentas.edicaoDeNo;
+		
+		if(noSelecionado == null){
+			ocultarInfoNo();
+			break;
 		}
-		carregarBarraDeFerramentas();
+		else{
+			exibirInfoNo();
+		}
+		
 		break;
 	
 	}
@@ -682,16 +684,18 @@ function onMouseDown( e )
 	switch( acao )
 	{
 	case acoes.move:
-		actNode = NoSobMouse(e);
+		//noSelecionado.x = (getMouseX(e)+xCanvas)/scale;
+		//noSelecionado.y = (getMouseY(e)+yCanvas)/scale;
+		//atualizarCanvas();
 		break;
 
 	case acoes.inserirAresta:
-		actNode = NoSobMouse(e);
+		noSelecionado = NoSobMouse(e);
 		actGrafo = grafoSobMouse(e);
 		break;
 
 	case acoes.inserirArestaBi:
-		actNode = NoSobMouse(e);
+		noSelecionado = NoSobMouse(e);
 		actGrafo = grafoSobMouse(e);
 		break;
 	
@@ -724,21 +728,21 @@ function mouseMove( e )
 	switch( acao )
 	{
 	case acoes.move:
-		if(actNode != null)
+		if(noSelecionado != null)
 		{
-			actNode.x = (getMouseX(e)+xCanvas)/scale;
-			actNode.y = (getMouseY(e)+yCanvas)/scale;
+			noSelecionado.x = (getMouseX(e)+xCanvas)/scale;
+			noSelecionado.y = (getMouseY(e)+yCanvas)/scale;
 			atualizarCanvas();
 		}
 		break;
 
 	case acoes.inserirAresta:
-		if(actNode != null)
+		if(noSelecionado != null)
 		{
 			atualizarCanvas();
 			contexto.beginPath();
 			contexto.strokeStyle = "000000";
-			contexto.moveTo( actNode.x, actNode.y );
+			contexto.moveTo( noSelecionado.x, noSelecionado.y );
 			contexto.lineTo( (getMouseX(e)+xCanvas)/scale, (getMouseY(e) +xCanvas)/scale );
 			contexto.stroke();
 			contexto.closePath();
@@ -747,12 +751,12 @@ function mouseMove( e )
 		break;
 	
 	case acoes.inserirArestaBi:
-		if(actNode != null)
+		if(noSelecionado != null)
 		{
 			atualizarCanvas();
 			contexto.beginPath();
 			contexto.strokeStyle = "000000";
-			contexto.moveTo( actNode.x, actNode.y );
+			contexto.moveTo( noSelecionado.x, noSelecionado.y );
 			contexto.lineTo( (getMouseX(e)+xCanvas)/scale, (getMouseY(e) +xCanvas)/scale );
 			contexto.stroke();
 			contexto.closePath();
@@ -782,20 +786,20 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 	switch( acao )
 	{
 	case acoes.move:
-		if(actNode != null)
+		if(noSelecionado != null)
 		{
-			actNode = null;
+			noSelecionado = null;
 		}
 		atualizarCanvas();
 		break;
 
 	case acoes.inserirAresta:
-		if( actNode != null )
+		if( noSelecionado != null )
 		{
 			var grafoAtual = grafoSobMouse(e);
 			if(grafoAtual == actGrafo)
 			{
-				var origem = actNode;
+				var origem = noSelecionado;
 				var numVertices = vertice.length;
 				
 				var destino = NoSobMouse(e);
@@ -809,18 +813,18 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 				origem.aresta[i_link] = new Aresta(valor, 1, destino);
 				atualizarCanvas();	
 			}
-			actNode = null;	
+			noSelecionado = null;	
 			atualizarCanvas();
 		}
 		break;
 	
 	case acoes.inserirArestaBi:
-		if( actNode != null )
+		if( noSelecionado != null )
 		{
 			var grafoAtual = grafoSobMouse(e);
 			if(grafoAtual == actGrafo)
 			{
-				var origem = actNode;
+				var origem = noSelecionado;
 				
 				var destino = NoSobMouse(e);
 				
@@ -839,7 +843,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 				
 				atualizarCanvas();	
 			}
-			actNode = null;	
+			noSelecionado = null;	
 			atualizarCanvas();
 		}
 		break;	
@@ -1003,15 +1007,43 @@ function configDjikstra(e)
 	acao = acoes.djikstra;
 }
 
-function carregarBarraDeFerramentas(){
-	switch(estadoBarraDeFerramentas){
+function exibirInfoNo(){
+	infoNo.innerHTML = 
+	"<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: info.</div>\
+	<label class= \" infoNoTextClass \" >Valor: </label>\
+	<input id= \"valorVertice\" type= \" text \" class= \" infoNoInputClass \" value = " + noSelecionado.valor + " onkeyup= \" mudarNomeVertice(); \" /><BR />\
+	<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: liga&ccedil&otildees.</div>\
+	";
 	
-	  case estadosBarraDeFerramentas.inicial:
-		barraDeFerramentas.innerHTML = "asd";
-		break;
+	infoNo.style.left = noSelecionado.x;
+	infoNo.style.top = noSelecionado.y;
+	infoNo.style.visibility = "visible";
+}
+
+function ocultarInfoNo(){
+	infoNo.style.visibility = "hidden";
+}
+
+function mudarNomeVertice(){
+	var caixaNovoValor = document.getElementById("valorVertice");
+	var novoValor = caixaNovoValor.value;
+	var nomeEncontrado = true;
 	
-	  case estadosBarraDeFerramentas.edicaoDeNo:
-		barraDeFerramentas.innerHTML = "Valor: <input type=\"text\" value=" + noSelecionado.valor + " class=\"caixaDeTexto\" />";
-		break;
+	if( padraoValorVertice.test(novoValor) == true && novoValor == padraoValorVertice.exec(novoValor)){
+		nomeEncontrado = false;
+		for(indiceVertice in grafoSelecionado.vertice){
+			if(grafoSelecionado.vertice[indiceVertice].valor == novoValor){
+				nomeEncontrado = true;
+			}
+		}
+	}
+	
+	if(nomeEncontrado == true ){
+		caixaNovoValor.style.background = "#FFDFDF";
+	}
+	else{
+		caixaNovoValor.style.background = "#FFFFFF";
+		noSelecionado.valor = padraoValorVertice.exec(novoValor);
+		atualizarCanvas();
 	}
 }
