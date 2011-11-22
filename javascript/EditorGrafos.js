@@ -1011,7 +1011,7 @@ function exibirInfoNo(){
 	infoNo.innerHTML = 
 	"<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: info.</div>\
 	<label class= \" infoNoTextClass \" >Valor: </label>\
-	<input id= \"valorVertice\" type= \" text \" class= \" infoNoInputClass \" value = " + noSelecionado.valor + " onkeyup= \" mudarNomeVertice(); \" /><BR />\
+	<input id= \"valorVertice\" type= \" text \" class= \" infoNoInputClass \" value = " + noSelecionado.valor + " onkeyup= \" mudarValorVertice(); \" /><BR />\
 	<div style= \" background-color:#800000; position:relative; color:#ffffff; \" width= \" 100% \" height= \" 20px \" >No: liga&ccedil&otildees.</div>\
 	";
 	
@@ -1024,11 +1024,13 @@ function ocultarInfoNo(){
 	infoNo.style.visibility = "hidden";
 }
 
-function mudarNomeVertice(){
+function mudarValorVertice(){
 	var caixaNovoValor = document.getElementById("valorVertice");
 	var novoValor = caixaNovoValor.value;
-	var nomeEncontrado = true;
+	var testeValor, nomeEncontrado = true;
 	
+	testeValor = testarValorVertice(novoValor);
+	/*
 	if( padraoValorVertice.test(novoValor) == true && novoValor == padraoValorVertice.exec(novoValor)){
 		nomeEncontrado = false;
 		for(indiceVertice in grafoSelecionado.vertice){
@@ -1046,4 +1048,32 @@ function mudarNomeVertice(){
 		noSelecionado.valor = padraoValorVertice.exec(novoValor);
 		atualizarCanvas();
 	}
+	*/
+	if(testeValor == false){
+		caixaNovoValor.style.background = "#FFDFDF";
+	}
+	else{
+		caixaNovoValor.style.background = "#FFFFFF";
+		noSelecionado.valor = padraoValorVertice.exec(novoValor);
+		atualizarCanvas();
+	}
+}
+
+function mudarValorAresta(){
+
+}
+
+function testarValorVertice(novoValor){
+	var nomeEncontrado = true;
+	
+	if( padraoValorVertice.test(novoValor) == true && novoValor == padraoValorVertice.exec(novoValor)){
+		nomeEncontrado = false;
+		for(indiceVertice in grafoSelecionado.vertice){
+			if(grafoSelecionado.vertice[indiceVertice].valor == novoValor){
+				nomeEncontrado = true;
+			}
+		}
+	}
+	
+	return (!nomeEncontrado);
 }
