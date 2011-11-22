@@ -19,6 +19,7 @@ var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 var noSelecionado = null;
 var grafoSelecionado = null;
 var infoNo = document.getElementById("infoNo");
+var linksGrafos = document.getElementById("linksGrafos");
 
 
 /* Referencia aos botões */
@@ -217,6 +218,14 @@ function desenharAresta( verticeOrigem, verticeDestino, aresta )
 
 }
 
+function atualizarLinksGrafos(){
+	var indice;
+	linksGrafos.innerHTML = "";
+	for(indice = 0; indice < grafos.length; indice++){
+		linksGrafos.innerHTML += "<a href= \"#\" onclick = \"selecionarGrafo("+ indice +"\" >"+indice+" </a> ";  
+	}
+}
+
 function atualizarCanvas( e ) 
 {				
 	desenharFundoCanvas();	
@@ -249,6 +258,7 @@ function atualizarCanvas( e )
 			desenharVertice(grafos[ig].cor, grafos[ig].vertice[i]);	
 		}
 	}
+	atualizarLinksGrafos();
 }
 
 function desenharVertice( corGrafo,  v )
@@ -1085,4 +1095,8 @@ function testarValorAresta(novoValor){
 	else{
 		return false;
 	}
+}
+
+function selecionarGrafo(indice){
+	grafoSelecionado = grafos[indice];
 }
