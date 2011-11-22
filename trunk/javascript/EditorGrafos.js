@@ -14,7 +14,7 @@ var noSelecionado = null;
 var actGrafo = null;
 var vertice = new Array();
 var grafos = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10};
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10, "ordenacaoTopologica":11};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 var noSelecionado = null;
 var grafoSelecionado = null;
@@ -294,6 +294,10 @@ function desenharFundoCanvas()
 	contexto.lineWidth = 3;
 	contexto.font = "12px serif";
 		
+}
+
+function selecionarAcao(idAcao){
+	acao = idAcao;
 }
 
 function selecionar(){

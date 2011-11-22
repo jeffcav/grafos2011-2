@@ -3,87 +3,139 @@
 <head>
 <title>H5 - Editor de grafos</title>
 
-<script language="JavaScript1.2" type="text/javascript" src="preloadMenu.js"> </script>
+<script language="JavaScript1.2" type="text/javascript" src="preload_menu.js"> </script>
 <script language="JavaScript1.2" type="text/javascript" src="mm_css_menu.js"></script>
 <style type="text/css" media="screen">
-	@import url("menu.css.css");
+	@import url("./menu.css");
 </style>
 </head>
 
-<body onload="MM_preloadImages('mouse_sobre_seta.png','mouse_sobre_seta.png','mouse_sobre_mesclar.png');">
+<body onload="MM_preloadImages('imagens/menu_r1_c14_s2.gif','imagens/selecionar_s2.gif');">
 	
-<div>
-<img src="imagens/titulo.png" /> 
-</div>
-
-
+	<div>
+	<img src="imagens/titulo.png" /> 
+	</div>
 	
-<div id="FWTableContainer333835985">
-<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="500">
-<!-- fwtable fwsrc="original.png" fwpage="Page 1" fwbase="menu.css.gif" fwstyle="Dreamweaver" fwdocid = "333835985" fwnested="0" -->
-  <tr>
-   <td><img src="spacer.gif" width="72" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="71" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="74" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="68" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="39" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="72" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="104" height="1" border="0" alt="" /></td>
-   <td><img src="spacer.gif" width="1" height="1" border="0" alt="" /></td>
-  </tr>
+	<div id="FWTableContainer1707048917">
+	<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="700">
+	<!-- fwtable fwsrc="original.png" fwpage="Page 1" fwbase="menu.gif" fwstyle="Dreamweaver" fwdocid = "1707048917" fwnested="0" -->
+	  <tr>
+	   <td><img src="imagens/spacer.gif" width="70" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="70" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="70" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="70" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="2" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="68" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="2" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="68" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="2" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="68" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="2" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="68" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="2" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="65" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="5" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="33" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="35" height="1" border="0" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="1" height="1" border="0" alt="" /></td>
+	  </tr>
 
-  <tr>
-   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110145143_0', 'MMMenu1110145143_0',0,30,'arquivo');"><img name="arquivo" src="arquivo.gif" width="72" height="30" border="0" id="arquivo" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110145014_1', 'MMMenu1110145014_1',0,30,'grafo');"><img name="grafo" src="grafo.gif" width="71" height="30" border="0" id="grafo" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144923_2', 'MMMenu1110144923_2',0,30,'vertice');"><img name="vertice" src="vertice.gif" width="74" height="30" border="0" id="vertice" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuShowMenu('MMMenuContainer1110144921_3', 'MMMenu1110144921_3',0,30,'aresta');"><img name="aresta" src="aresta.gif" width="68" height="30" border="0" id="aresta" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('seta','','mouse_sobre_seta.png','seta','','mouse_sobre_seta.png',1);" onclick="selecionar();"><img name="seta" src="seta.gif" width="39" height="30" border="0" id="seta" alt="" /></a></td>
-   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('mesclar','','mouse_sobre_mesclar.png',1);" onclick="mesclarGrafo();"><img name="mesclar" src="mesclar.gif" width="72" height="30" border="0" id="mesclar" alt="" /></a></td>
-   <td><img name="menucss_r1_c7" src="menu.css_r1_c7.gif" width="104" height="30" border="0" id="menucss_r1_c7" alt="" /></td>
-   <td><img src="spacer.gif" width="1" height="30" border="0" alt="" /></td>
-  </tr>
-</table>
-<div id="MMMenuContainer1110145143_0">
-	<div id="MMMenu1110145143_0" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
-		<a href="javascript:;" id="MMMenu1110145143_0_Item_0" class="MMMIFVStyleMMMenu1110145143_0" onmouseover="MM_menuOverMenuItem('MMMenu1110145143_0');" onclick="salvarGrafo();">
-			Salvar
+	  <tr>
+	   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122155727_0', 'MMMenu1122155727_0',0,30,'arquivo_s1');"><img name="arquivo_s1" src="imagens/arquivo_s1.gif" width="70" height="30" border="0" id="arquivo_s1" alt="" /></a></td>
+	   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122155654_1', 'MMMenu1122155654_1',0,30,'grafos_s1');"><img name="grafos_s1" src="imagens/grafos_s1.gif" width="70" height="30" border="0" id="grafos_s1" alt="" /></a></td>
+	   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122160925_2', 'MMMenu1122160925_2',0,30,'vertices_s1');"><img name="vertices_s1" src="imagens/vertices_s1.gif" width="70" height="30" border="0" id="vertices_s1" alt="" /></a></td>
+	   <td><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122160944_3', 'MMMenu1122160944_3',0,30,'arestas_s1');"><img name="arestas_s1" src="imagens/arestas_s1.gif" width="70" height="30" border="0" id="arestas_s1" alt="" /></a></td>
+	   <td colspan="2"><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122161030_4', 'MMMenu1122161030_4',0,30,'busca_s1');"><img name="busca_s1" src="imagens/busca_s1.gif" width="70" height="30" border="0" id="busca_s1" alt="" /></a></td>
+	   <td colspan="2"><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122161052_5', 'MMMenu1122161052_5',0,30,'ordenacao_s1');"><img name="ordenacao_s1" src="imagens/ordenacao_s1.gif" width="70" height="30" border="0" id="ordenacao_s1" alt="" /></a></td>
+	   <td colspan="2"><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122161156_6', 'MMMenu1122161156_6',0,30,'arv_g_min_s1');"><img name="arv_g_min_s1" src="imagens/arv_g_min_s1.gif" width="70" height="30" border="0" id="arv_g_min_s1" alt="" /></a></td>
+	   <td colspan="3"><a href="javascript:;" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuShowMenu('MMMenuContainer1122161315_7', 'MMMenu1122161315_7',0,30,'cam_min_s1');"><img name="cam_min_s1" src="imagens/cam_min_s1.gif" width="72" height="30" border="0" id="cam_min_s1" alt="" /></a></td>
+	   <td><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('menu_r1_c14_s1','','imagens/menu_r1_c14_s2.gif',1);"><img name="menu_r1_c14_s1" src="imagens/menu_r1_c14_s1.gif" width="65" height="30" border="0" id="menu_r1_c14_s1" alt="" /></a></td> <!-- COLORACAO -->
+	   <td colspan="2"><a href="javascript:;" onmouseout="MM_swapImgRestore();" onmouseover="MM_swapImage('selecionar_s1','','imagens/selecionar_s2.gif',1);"><img name="selecionar_s1" src="imagens/selecionar_s1.gif" width="38" height="30" border="0" id="selecionar_s1" alt="" onclick="selecionarAcao(10);" /></a></td> <!-- SELECIONAR -->
+	   <td><img name="menu_r1_c17_s1" src="imagens/menu_r1_c17_s1.gif" width="35" height="30" border="0" id="menu_r1_c17_s1" alt="" /></td>
+	   <td><img src="imagens/spacer.gif" width="1" height="30" border="0" alt="" /></td>
+	  </tr>
+	</table>
+	<div id="MMMenuContainer1122155727_0">
+		<div id="MMMenu1122155727_0" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122155727_0_Item_0" class="MMMIFVStyleMMMenu1122155727_0" onmouseover="MM_menuOverMenuItem('MMMenu1122155727_0');" onclick="lerGrafo();">
+				Abrir
+			</a>
+			<a href="javascript:;" id="MMMenu1122155727_0_Item_1" class="MMMIVStyleMMMenu1122155727_0" onmouseover="MM_menuOverMenuItem('MMMenu1122155727_0');" onclick="salvarGrafo();">
+				Salvar
+			</a>
+		</div>
+	</div>
+	<div id="MMMenuContainer1122155654_1">
+		<div id="MMMenu1122155654_1" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122155654_1_Item_0" class="MMMIFVStyleMMMenu1122155654_1" onmouseover="MM_menuOverMenuItem('MMMenu1122155654_1');" onclick="inserirGrafo();"> <!-- CRIAR GRAFO -->
+				Criar
+			</a>
+			<a href="javascript:;" id="MMMenu1122155654_1_Item_1" class="MMMIVStyleMMMenu1122155654_1" onmouseover="MM_menuOverMenuItem('MMMenu1122155654_1');" onclick="removerGrafo();"> 	<!-- REMOVER GRAFO -->
+				Remover
+			</a>
+			<a href="javascript:;" id="MMMenu1122155654_1_Item_2" class="MMMIVStyleMMMenu1122155654_1" onmouseover="MM_menuOverMenuItem('MMMenu1122155654_1');"> 							<!-- MESCLAR GRAFO -->
+				Mesclar
+			</a>
+		</div>
+	</div>
+	<div id="MMMenuContainer1122160925_2">
+		<div id="MMMenu1122160925_2" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122160925_2_Item_0" class="MMMIFVStyleMMMenu1122160925_2" onmouseover="MM_menuOverMenuItem('MMMenu1122160925_2');" onclick="selecionarAcao(1);"> 	<!-- CRIAR VERTICES -->
+				Criar
+			</a>
+			<a href="javascript:;" id="MMMenu1122160925_2_Item_1" class="MMMIVStyleMMMenu1122160925_2" onmouseover="MM_menuOverMenuItem('MMMenu1122160925_2');" onclick="selecionarAcao(2);"> 	<!-- REMOVER VERTICES -->
+				Remover
+			</a>
+		</div>
+	</div>
+<div id="MMMenuContainer1122160944_3">
+	<div id="MMMenu1122160944_3" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+		<a href="javascript:;" id="MMMenu1122160944_3_Item_0" class="MMMIFVStyleMMMenu1122160944_3" onmouseover="MM_menuOverMenuItem('MMMenu1122160944_3');">
+			Unidirecionada
 		</a>
-		<a href="javascript:;" id="MMMenu1110145143_0_Item_1" class="MMMIVStyleMMMenu1110145143_0" onmouseover="MM_menuOverMenuItem('MMMenu1110145143_0');" onclick="lerGrafo();">
-			Carregar
+		<a href="javascript:;" id="MMMenu1122160944_3_Item_1" class="MMMIVStyleMMMenu1122160944_3" onmouseover="MM_menuOverMenuItem('MMMenu1122160944_3');">
+			Bidirecionada
+		</a>
+		<a href="javascript:;" id="MMMenu1122160944_3_Item_2" class="MMMIVStyleMMMenu1122160944_3" onmouseover="MM_menuOverMenuItem('MMMenu1122160944_3');">
+			Remover
 		</a>
 	</div>
 </div>
-<div id="MMMenuContainer1110145014_1">
-	<div id="MMMenu1110145014_1" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
-		<a href="javascript:;" id="MMMenu1110145014_1_Item_0" class="MMMIFVStyleMMMenu1110145014_1" onmouseover="MM_menuOverMenuItem('MMMenu1110145014_1');" onclick="inserirGrafo();" >
-			Novo&nbsp;Grafo
-		</a>
-		<a href="javascript:;" id="MMMenu1110145014_1_Item_1" class="MMMIVStyleMMMenu1110145014_1" onmouseover="MM_menuOverMenuItem('MMMenu1110145014_1');" onclick="removerGrafo();" >
-			Deletar&nbsp;Grafo
-		</a>
+	<div id="MMMenuContainer1122161030_4">
+		<div id="MMMenu1122161030_4" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122161030_4_Item_0" class="MMMIFVStyleMMMenu1122161030_4" onmouseover="MM_menuOverMenuItem('MMMenu1122161030_4');" onclick="configBuscaProfundidade();"> 	<!-- BUSCA PROFUNDIDADE -->
+				Profundidade
+			</a>
+			<a href="javascript:;" id="MMMenu1122161030_4_Item_1" class="MMMIVStyleMMMenu1122161030_4" onmouseover="MM_menuOverMenuItem('MMMenu1122161030_4');" onclick="configBuscaLargura();">  		<!-- BUSCA LARGURA -->
+				Largura
+			</a>
+		</div>
 	</div>
-</div>
-<div id="MMMenuContainer1110144923_2">
-	<div id="MMMenu1110144923_2" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
-		<a href="javascript:;" id="MMMenu1110144923_2_Item_0" class="MMMIFVStyleMMMenu1110144923_2" onmouseover="MM_menuOverMenuItem('MMMenu1110144923_2');" onclick="inserirVertice();" >
-			Adicionar&nbsp;V&eacute;rtice 
-		</a>
-		<a href="javascript:;" id="MMMenu1110144923_2_Item_1" class="MMMIVStyleMMMenu1110144923_2" onmouseover="MM_menuOverMenuItem('MMMenu1110144923_2');" onclick="removerVertice();" >
-			Remover&nbsp;V&eacute;rtice
-		</a>
+	<div id="MMMenuContainer1122161052_5">
+		<div id="MMMenu1122161052_5" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122161052_5_Item_0" class="MMMIFVStyleMMMenu1122161052_5" onmouseover="MM_menuOverMenuItem('MMMenu1122161052_5');" onclick="configOrdenacaoTopologica();">	<!-- ORDENACAO TOPOLOGICA -->
+				Topol&oacute;gica
+			</a>
+		</div>
 	</div>
-</div>
-<div id="MMMenuContainer1110144921_3">
-	<div id="MMMenu1110144921_3" onmouseout="MM_menuStartTimeout(250);" onmouseover="MM_menuResetTimeout();">
-		<a href="javascript:;" id="MMMenu1110144921_3_Item_0" class="MMMIFVStyleMMMenu1110144921_3" onmouseover="MM_menuOverMenuItem('MMMenu1110144921_3');" onclick="inserirAresta();">
-			Criar&nbsp;Aresta
-		</a>
-		<a href="javascript:;" id="MMMenu1110144921_3_Item_1" class="MMMIVStyleMMMenu1110144921_3" onmouseover="MM_menuOverMenuItem('MMMenu1110144921_3');" onclick="removerAresta();">
-			Remover&nbsp;Aresta
-		</a>
+	<div id="MMMenuContainer1122161156_6">
+		<div id="MMMenu1122161156_6" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122161156_6_Item_0" class="MMMIFVStyleMMMenu1122161156_6" onmouseover="MM_menuOverMenuItem('MMMenu1122161156_6');">	<!-- ARVORE GERADORA MINIMA PRIM -->
+				Prim
+			</a>
+			<a href="javascript:;" id="MMMenu1122161156_6_Item_1" class="MMMIVStyleMMMenu1122161156_6" onmouseover="MM_menuOverMenuItem('MMMenu1122161156_6');" onclick="configKruskal();">	<!-- ARVORE GERADORA MINIMA KRUSKAL -->
+				Kruskal
+			</a>
+		</div>
 	</div>
-</div>
-</div>
+	<div id="MMMenuContainer1122161315_7">
+		<div id="MMMenu1122161315_7" onmouseout="MM_menuStartTimeout(100);" onmouseover="MM_menuResetTimeout();">
+			<a href="javascript:;" id="MMMenu1122161315_7_Item_0" class="MMMIFVStyleMMMenu1122161315_7" onmouseover="MM_menuOverMenuItem('MMMenu1122161315_7');" onclick="selecionarAcao(9);"> <!-- CAMINHO MINIMO DIJKSTRA -->
+				Dijkstra
+			</a>
+		</div>
+	</div>
+	</div>
 
 	<div id="infoNo">info</div>
 	<canvas id="canvas" width="1000" height="500"></canvas>
