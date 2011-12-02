@@ -22,6 +22,7 @@ var infoNo = document.getElementById("infoNo");
 var linksGrafos = document.getElementById("linksGrafos");
 var estaMovendo = false;
 var ctrlPressionado = false;
+var ativarInfoNo = true;
 
 
 
@@ -39,8 +40,14 @@ canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
 canvas.addEventListener( 'mouseup', onMouseUp, false);
 
-canvas.onKeyUp = function (event){
-	
+document.onkeydown = function (event){
+	if(event.ctrlKey == true){
+		ctrlPressionado = true;
+	}
+}
+
+document.onkeyup = function (event){
+	ctrlPressionado = false;
 }
 
 function desenharAresta( verticeOrigem, verticeDestino, aresta )
@@ -186,7 +193,7 @@ function atualizarLinksGrafos(){
 	var indice;
 	linksGrafos.innerHTML = "";
 	for(indice = 0; indice < grafos.length; indice++){
-		linksGrafos.innerHTML += "<a href= \"#\" onclick = \"selecionarGrafo("+ indice +"\" >"+grafos[indice].nome+" - </a> ";  
+			linksGrafos.innerHTML += "<a href= \"#\" onclick = \"selecionarGrafo("+ indice +"\" >"+grafos[indice].nome+" - </a> ";  
 	}
 }
 
@@ -307,7 +314,7 @@ function inserirGrafo()
 	ocultarInfoNo();
 	var nome = window.prompt( "Digite o nome do grafo que voce deseja criar.", "" );
 	var cor = window.prompt( "Digite a cor do grafo que voce deseja criar.", "000000" );
-	actGrafo = new Grafo(nome, cor);
+	grafoSelecionado = new Grafo(nome, cor);
 	grafos[grafos.length] = actGrafo;
 	
 	atualizarCanvas();
@@ -549,7 +556,9 @@ function mouseClick( e )
 			break;
 		}
 		else{
-			exibirInfoNo();
+			if(ativarInfoNo == true){
+				exibirInfoNo();
+			}
 		}
 		
 		break;
@@ -696,6 +705,10 @@ function onMouseDown( e )
 		estaMovendo = true;
 		noSelecionado = NoSobMouse(e);
 		grafoSelecionado = grafoSobMouse(e);
+		if(ctrlPressionado == true){
+			iniX = (getMouseX(e)+xCanvas)/scale;
+			iniY = (getMouseY(e)+yCanvas)/scale;
+		}
 		break;
 	}
 	
@@ -761,9 +774,9 @@ function mouseMove( e )
 			noSelecionado.x = (getMouseX(e)+xCanvas)/scale;
 			noSelecionado.y = (getMouseY(e)+yCanvas)/scale;
 			atualizarCanvas();
+			ativarInfoNo = false;
 		}
 		else if(estaMovendo == true && ctrlPressionado == true){
-			document.write("asd");
 			var x = iniX - (getMouseX(e)+xCanvas)/scale;
 			var y = iniY - (getMouseY(e)+yCanvas)/scale;
 			iniX = (getMouseX(e)+xCanvas)/scale;
@@ -773,6 +786,10 @@ function mouseMove( e )
 				grafoSelecionado.vertice[i].y -= y;
 			}
 			atualizarCanvas();
+			ativarInfoNo = false;
+		}
+		else{
+			ativarInfoNo = true;
 		}
 		break;
 	
@@ -855,6 +872,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 		break;
 	case acoes.selecionar:
 		estaMovendo = false;
+		
 		break;
 	
 	}	
