@@ -20,64 +20,28 @@ var noSelecionado = null;
 var grafoSelecionado = null;
 var infoNo = document.getElementById("infoNo");
 var linksGrafos = document.getElementById("linksGrafos");
+var estaMovendo = false;
+var ctrlPressionado = false;
 
 
-/* Referencia aos botões */
-/*var criarVerticeButton = document.getElementById( "criaVertice" );
-var deletarVertice = document.getElementById( "deletaVertice" );
-var criarArestaButton = document.getElementById("ligaVertice");
-var criarArestaBiButton = document.getElementById("ligacaoBi");
-var deletarArestaButton = document.getElementById("deletaAresta");
-var moverButton = document.getElementById("mover");
-var salvar = document.getElementById("salvar");
-var ler = document.getElementById("ler");
-var criarGrafoButton = document.getElementById( "criaGrafo" );
-var deletarGrafoButton = document.getElementById( "deletaGrafo" );
-var selecionarGrafoButton = document.getElementById( "selecionarGrafo" );
-var moverGrafoButton = document.getElementById("moverGrafo");
-var zoomInButton = document.getElementById("zoomIn");
-var zoomOutButton = document.getElementById("zoomOut");
-var mergeButton = document.getElementById("merge");
-var bProfundidade = document.getElementById("bProfundidade");
-var bLargura = document.getElementById("bLargura");
-var ordTopologica = document.getElementById("ordTopologica");
-var kruskal = document.getElementById("kruskal");
-var djikstra = document.getElementById("djikstra");
-*/
+
 /* Constantes */
+const descontoMenu = 52;
 const descCanvasX = canvas.offsetLeft;
-const descCanvasY = canvas.offsetTop;
+const descCanvasY = canvas.offsetTop + descontoMenu;
 
 /* Escutas de eventos */
 window.addEventListener( 'load', atualizarCanvas, false );
 window.addEventListener( 'load', mouseMove, false );
-/*
-criarVerticeButton.addEventListener( 'click', inserirVertice, false );
-deletarArestaButton.addEventListener('click', removerAresta, false);
-criarArestaButton.addEventListener( 'click', inserirAresta, false );
-criarArestaBiButton.addEventListener( 'click', inserirArestaBi, false );
-deletarVertice.addEventListener('click', removerVertice, false);
-moverButton.addEventListener( 'click', mover, false );
-salvar.addEventListener( 'click', salvarGrafo, false );
-ler.addEventListener( 'click', lerGrafo, false );
-criarGrafoButton.addEventListener( 'click', inserirGrafo, false );
-deletarGrafoButton.addEventListener('click', removerGrafo, false);
-selecionarGrafoButton.addEventListener('click', seleGrafo, false);
-moverGrafoButton.addEventListener( 'click', moverGrafo, false );
-zoomInButton.addEventListener('click', menosZoom, false);
-zoomOutButton.addEventListener('click', maisZoom, false);
-mergeButton.addEventListener('click', mesclarGrafo, false);
-bProfundidade.addEventListener('click', configBuscaProfundidade, false);
-bLargura.addEventListener('click', configBuscaLargura, false);
-ordTopologica.addEventListener( 'click', configOrdenacaoTopologica, false );
-kruskal.addEventListener('click', configKruskal, false);
-djikstra.addEventListener('click', configDjikstra, false);
-*/
+
 canvas.addEventListener( 'click', mouseClick, false );
 canvas.addEventListener( 'mousemove', mouseMove, false );
 canvas.addEventListener( 'mousedown', onMouseDown, false);
 canvas.addEventListener( 'mouseup', onMouseUp, false);
 
+canvas.onKeyUp = function (event){
+	
+}
 
 function desenharAresta( verticeOrigem, verticeDestino, aresta )
 {
@@ -222,7 +186,7 @@ function atualizarLinksGrafos(){
 	var indice;
 	linksGrafos.innerHTML = "";
 	for(indice = 0; indice < grafos.length; indice++){
-		linksGrafos.innerHTML += "<a href= \"#\" onclick = \"selecionarGrafo("+ indice +"\" >"+indice+" </a> ";  
+		linksGrafos.innerHTML += "<a href= \"#\" onclick = \"selecionarGrafo("+ indice +"\" >"+grafos[indice].nome+" - </a> ";  
 	}
 }
 
@@ -298,6 +262,7 @@ function desenharFundoCanvas()
 
 function selecionarAcao(idAcao){
 	acao = idAcao;
+	ocultarInfoNo();
 }
 
 function selecionar(){
@@ -306,11 +271,13 @@ function selecionar(){
 
 function inserirVertice()
 {
+	ocultarInfoNo();
 	acao = acoes.inserirVertice;
 }
 
 function inserirAresta()
 {
+	ocultarInfoNo();
 	acao = acoes.inserirAresta;
 }
 
@@ -321,10 +288,12 @@ function inserirArestaBi()
 
 function removerVertice()
 {
+	ocultarInfoNo();
 	acao = acoes.deletarVertice;
 }
 
 function removerAresta(){
+	ocultarInfoNo();
 	acao = acoes.deletarAresta;
 }
 
@@ -335,10 +304,13 @@ function mover()
 
 function inserirGrafo()
 {
+	ocultarInfoNo();
 	var nome = window.prompt( "Digite o nome do grafo que voce deseja criar.", "" );
 	var cor = window.prompt( "Digite a cor do grafo que voce deseja criar.", "000000" );
 	actGrafo = new Grafo(nome, cor);
 	grafos[grafos.length] = actGrafo;
+	
+	atualizarCanvas();
 }
 
 function moverGrafo()
@@ -349,11 +321,13 @@ function moverGrafo()
 
 function seleGrafo()
 {
+	ocultarInfoNo();
 	acao = acoes.selecionarGrafo;
 }
 
 function removerGrafo()
 {
+	ocultarInfoNo();
 	//acao = acoes.deletarGrafo;
 	var nome = window.prompt( "Digite o nome do grafo que voce deseja remover.", "" );
 	for(var ig = 0; ig < grafos.length; ig++){
@@ -718,27 +692,17 @@ function onMouseDown( e )
 		iniX = (getMouseX(e)+xCanvas)/scale;
 		iniY = (getMouseY(e)+yCanvas)/scale;
 		break;
+	case acoes.selecionar:
+		estaMovendo = true;
+		noSelecionado = NoSobMouse(e);
+		grafoSelecionado = grafoSobMouse(e);
+		break;
 	}
 	
 }
 
 function mouseMove( e )
-{
-	posXY.innerHTML = " ";
-	for(var ig = 0; ig < grafos.length; ig++){
-		if(grafos[ig] == actGrafo)
-		{
-			posXY.innerHTML += '<font color=' + grafos[ig].cor + '><u> '+ grafos[ig].nome +' </u></font>';
-		}
-		else
-		{
-			posXY.innerHTML += '<font color=' + grafos[ig].cor + '>  '+ grafos[ig].nome +'  </font>';
-		}
-	}
-	posXY.innerHTML += "<br />";
-	posXY.innerHTML += 'Pos X = ' + getMouseX(e) + "<br />";	
-	posXY.innerHTML += 'Pos Y = ' + getMouseY(e) + "<br />";
-	
+{	
 	switch( acao )
 	{
 	case acoes.move:
@@ -792,6 +756,26 @@ function mouseMove( e )
 			atualizarCanvas();
 		}
 		break;
+	case acoes.selecionar:
+		if(estaMovendo == true && noSelecionado != null && e.ctrlKey == false){
+			noSelecionado.x = (getMouseX(e)+xCanvas)/scale;
+			noSelecionado.y = (getMouseY(e)+yCanvas)/scale;
+			atualizarCanvas();
+		}
+		else if(estaMovendo == true && ctrlPressionado == true){
+			document.write("asd");
+			var x = iniX - (getMouseX(e)+xCanvas)/scale;
+			var y = iniY - (getMouseY(e)+yCanvas)/scale;
+			iniX = (getMouseX(e)+xCanvas)/scale;
+			iniY = (getMouseY(e)+yCanvas)/scale;
+			for( var i in  grafoSelecionado.vertice ){
+				grafoSelecionado.vertice[i].x -= x;
+				grafoSelecionado.vertice[i].y -= y;
+			}
+			atualizarCanvas();
+		}
+		break;
+	
 	}
 }
 
@@ -868,6 +852,9 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 			actGrafo = null;
 		}
 		atualizarCanvas();
+		break;
+	case acoes.selecionar:
+		estaMovendo = false;
 		break;
 	
 	}	
@@ -973,6 +960,7 @@ function getMouseY( e )
 
 function configBuscaProfundidade(e)
 {	
+	ocultarInfoNo();
 	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
 	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
 	buscaProfundidade( verticeOrigem, verticeDestino );
@@ -980,6 +968,7 @@ function configBuscaProfundidade(e)
 
 function configBuscaLargura(e)
 {	
+	ocultarInfoNo();
 	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
 	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
 	buscaLargura( verticeOrigem, verticeDestino );
@@ -987,6 +976,8 @@ function configBuscaLargura(e)
 
 
 function mesclarGrafo(){
+
+	ocultarInfoNo();
 	var nome1 = window.prompt( "Digite o nome do primeiro grafo", "" );
 	var nome2 = window.prompt( "Digite o nome do segundo grafo", "" );
 	var grafo1;
@@ -1006,18 +997,23 @@ function mesclarGrafo(){
 
 function configOrdenacaoTopologica(e)
 {
+	ocultarInfoNo();
 	var conjVertice = actGrafo.vertice;
 	ordenacaoTopologica( conjVertice );
 }
 
 function configKruskal(e)
 {
+
+	ocultarInfoNo();
 	arvoreMinimaKruskal( actGrafo );
 	atualizarCanvas();
 }
 
 function configDjikstra(e)
 {
+
+	ocultarInfoNo();
 	acao = acoes.djikstra;
 }
 
@@ -1052,8 +1048,8 @@ function exibirInfoNo(){
 	}
 	
 	infoNo.innerHTML += "<br />"
-	infoNo.style.left = noSelecionado.x;
-	infoNo.style.top = noSelecionado.y;
+	infoNo.style.left = noSelecionado.x*scale;
+	infoNo.style.top = noSelecionado.y*scale;
 	infoNo.style.visibility = "visible";
 	
 }
