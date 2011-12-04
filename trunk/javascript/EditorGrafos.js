@@ -11,7 +11,7 @@ var alturaCanvas = 500;
 var acao;
 var raio = 20;
 var noSelecionado = null;
-var actGrafo = null;
+var grafoSelecionado = null;
 var vertice = new Array();
 var grafos = new Array();
 var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10, "ordenacaoTopologica":11};
@@ -285,11 +285,13 @@ function inserirVertice()
 function inserirAresta()
 {
 	ocultarInfoNo();
+	noSelecionado = null;
 	acao = acoes.inserirAresta;
 }
 
 function inserirArestaBi()
 {
+	noSelecionado = null;
 	acao = acoes.inserirArestaBi;
 }
 
@@ -315,14 +317,14 @@ function inserirGrafo()
 	var nome = window.prompt( "Digite o nome do grafo que voce deseja criar.", "" );
 	var cor = window.prompt( "Digite a cor do grafo que voce deseja criar.", "000000" );
 	grafoSelecionado = new Grafo(nome, cor);
-	grafos[grafos.length] = actGrafo;
+	grafos[grafos.length] = grafoSelecionado;
 	
 	atualizarCanvas();
 }
 
 function moverGrafo()
 {
-	actGrafo = null;
+	grafoSelecionado = null;
 	acao = acoes.moverGrafo;
 }
 
@@ -529,18 +531,18 @@ function mouseClick( e )
 	case acoes.selecionarGrafo:
 		if(grafos.length > 0)
 		{
-			actGrafo = grafoSobMouse(e);
+			grafoSelecionado = grafoSobMouse(e);
 		}
 		break;
 	
 	case acoes.djikstra:
 		if(grafos.length > 0)
 		{
-			actGrafo = grafoSobMouse(e);
+			grafoSelecionado = grafoSobMouse(e);
 			noSelecionado = NoSobMouse(e);
-			if(actGrafo != -1 && noSelecionado != null )
+			if(grafoSelecionado != -1 && noSelecionado != null )
 			{
-				caminhoMinimoDjikstra(actGrafo, noSelecionado);
+				caminhoMinimoDjikstra(grafoSelecionado, noSelecionado);
 				atualizarCanvas();
 			}
 			noSelecionado = null;
@@ -574,7 +576,7 @@ function inserirVerticeAuxiliar(e){
 		while( nomeEncontrado == true )
 		{
 			var valor = window.prompt( "Digite um valor valido para o vertice", "" );
-			if(actGrafo != null ) var mygrafo = window.prompt( "Digite em qual grafo", actGrafo.nome );
+			if(grafoSelecionado != null ) var mygrafo = window.prompt( "Digite em qual grafo", grafoSelecionado.nome );
 			else var mygrafo = window.prompt( "Digite em qual grafo", "Nao definido" );
 			
 			for(ig = 0; ig <= grafos.length; ig++)
@@ -688,16 +690,16 @@ function onMouseDown( e )
 
 	case acoes.inserirAresta:
 		noSelecionado = NoSobMouse(e);
-		actGrafo = grafoSobMouse(e);
+		grafoSelecionado = grafoSobMouse(e);
 		break;
 
 	case acoes.inserirArestaBi:
 		noSelecionado = NoSobMouse(e);
-		actGrafo = grafoSobMouse(e);
+		grafoSelecionado = grafoSobMouse(e);
 		break;
 	
 	case acoes.moverGrafo:
-		actGrafo = grafoSobMouse(e);
+		grafoSelecionado = grafoSobMouse(e);
 		iniX = (getMouseX(e)+xCanvas)/scale;
 		iniY = (getMouseY(e)+yCanvas)/scale;
 		break;
@@ -756,15 +758,15 @@ function mouseMove( e )
 		break;
 	
 	case acoes.moverGrafo:
-		if( actGrafo != null )
+		if( grafoSelecionado != null )
 		{
 			var x = iniX - (getMouseX(e)+xCanvas)/scale;
 			var y = iniY - (getMouseY(e)+yCanvas)/scale;
 			iniX = (getMouseX(e)+xCanvas)/scale;
 			iniY = (getMouseY(e)+yCanvas)/scale;
-			for( var i in  actGrafo.vertice ){
-				actGrafo.vertice[i].x -= x;
-				actGrafo.vertice[i].y -= y;
+			for( var i in  grafoSelecionado.vertice ){
+				grafoSelecionado.vertice[i].x -= x;
+				grafoSelecionado.vertice[i].y -= y;
 			}
 			atualizarCanvas();
 		}
@@ -812,7 +814,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 		if( noSelecionado != null )
 		{
 			var grafoAtual = grafoSobMouse(e);
-			if(grafoAtual == actGrafo)
+			if(grafoAtual == grafoSelecionado)
 			{
 				var origem = noSelecionado;
 				var numVertices = vertice.length;
@@ -837,7 +839,7 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 		if( noSelecionado != null )
 		{
 			var grafoAtual = grafoSobMouse(e);
-			if(grafoAtual == actGrafo)
+			if(grafoAtual == grafoSelecionado)
 			{
 				var origem = noSelecionado;
 				
@@ -864,9 +866,9 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 		break;	
 
 	case acoes.moverGrafo:
-		if(actGrafo != null)
+		if(grafoSelecionado != null)
 		{
-			actGrafo = null;
+			grafoSelecionado = null;
 		}
 		atualizarCanvas();
 		break;
@@ -979,16 +981,16 @@ function getMouseY( e )
 function configBuscaProfundidade(e)
 {	
 	ocultarInfoNo();
-	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
-	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
+	var verticeOrigem = achaVerticePorValor( grafoSelecionado.nome, prompt( "Digite a origem:" ) );
+	var verticeDestino = achaVerticePorValor( grafoSelecionado.nome, prompt( "Digite o destino:" ) );
 	buscaProfundidade( verticeOrigem, verticeDestino );
 }
 
 function configBuscaLargura(e)
 {	
 	ocultarInfoNo();
-	var verticeOrigem = achaVerticePorValor( actGrafo.nome, prompt( "Digite a origem:" ) );
-	var verticeDestino = achaVerticePorValor( actGrafo.nome, prompt( "Digite o destino:" ) );
+	var verticeOrigem = achaVerticePorValor( grafoSelecionado.nome, prompt( "Digite a origem:" ) );
+	var verticeDestino = achaVerticePorValor( grafoSelecionado.nome, prompt( "Digite o destino:" ) );
 	buscaLargura( verticeOrigem, verticeDestino );
 }
 
@@ -1016,7 +1018,7 @@ function mesclarGrafo(){
 function configOrdenacaoTopologica(e)
 {
 	ocultarInfoNo();
-	var conjVertice = actGrafo.vertice;
+	var conjVertice = grafoSelecionado.vertice;
 	ordenacaoTopologica( conjVertice );
 }
 
@@ -1024,9 +1026,17 @@ function configKruskal(e)
 {
 
 	ocultarInfoNo();
-	arvoreMinimaKruskal( actGrafo );
+	arvoreMinimaKruskal( grafoSelecionado );
 	atualizarCanvas();
 }
+
+function configPrim(e)
+{
+	ocultarInfoNo();
+	arvoreMinimaPrim( grafoSelecionado );
+	atualizarCanvas();
+}
+
 
 function configDjikstra(e)
 {

@@ -201,7 +201,7 @@ function mesclarArestas(vertice1, vertice2, grafo1)
 {
 	for(var i in vertice2.aresta)
 	{
-		if(grafo1.vertice[vertice2.aresta[i].destino.valor] != 'undefined')
+		if(typeof grafo1.vertice[vertice2.aresta[i].destino.valor] != 'undefined')
 		{
 			var tam = vertice1.aresta.length;
 			vertice1.aresta[tam] = new Aresta(vertice2.aresta[i].valor, 1, grafo1.vertice[vertice2.aresta[i].destino.valor]);
@@ -285,6 +285,53 @@ function arvoreMinimaKruskal(grafo)
 			//sleep(1000);
 			atualizarCanvas();
 			//window.alert("aresta entre: " + vi +  " e " + vj +  " pintada: " + raiz[1] + " " + raiz[2] + " " + raiz[3] + " " + raiz[4] + " " + raiz[5] + " " + raiz[6] + " ." );
+		}
+	}
+}
+
+function arvoreMinimaPrim(grafo)
+{
+	var ligacoes = new Array();	
+	for(var i in grafo.vertice)
+	{
+		for(var j in grafo.vertice[i].aresta)
+		{
+				ligacoes[ligacoes.length] = new Ligacao(grafo.vertice[i], grafo.vertice[i].aresta[j]);
+		}
+		break;
+	}
+	ordenar(ligacoes);
+	var NLA = 0;
+	var raiz = new Array();
+	for(var i in grafo.vertice)
+	{
+		raiz[i] = 0;
+	}
+	var i = 0;
+	while(NLA < (grafo.vertice.length - 1) && i < ligacoes.length)
+	{
+		lig = ligacoes[i];
+		i++;
+		var k =  lig.aresta.destino.valor;
+		if(raiz[k] == 0)
+		{
+			NLA++;
+			lig.aresta.cor = 'D2691E';
+			for(var j in lig.aresta.destino.aresta)
+			{
+				if(lig.aresta.destino.aresta[j].destino == lig.origem)
+					lig.aresta.destino.aresta[j].cor = 'D2691E';
+			}
+			raiz[k] = 1;
+			
+			for(var j in grafo.vertice[k].aresta)
+			{
+					ligacoes[ligacoes.length] = new Ligacao(grafo.vertice[k], grafo.vertice[k].aresta[j]);
+			}
+			atualizarCanvas();
+			
+			ordenar(ligacoes);
+			
 		}
 	}
 }
