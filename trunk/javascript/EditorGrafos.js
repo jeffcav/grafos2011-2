@@ -1159,4 +1159,6 @@ function colorirGrafo(){
 	for(i in coresVertices){
 		grafoSelecionado.vertice[i].cor = coresVertices[i];
 	}
+	
+	atualizarCanvas();
 }
