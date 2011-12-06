@@ -24,7 +24,11 @@ var estaMovendo = false;
 var ctrlPressionado = false;
 var ativarInfoNo = true;
 
+var cores = new Array();
+var colorido = new Array();
+var coresVertices = new Array();
 
+gerarCores();
 
 /* Constantes */
 const descontoMenu = 52;
@@ -498,6 +502,19 @@ function achaVerticePorValor( nomeGrafo, valorVertice )	// deve ser trocado por 
 			if( grafos[i].nome == nomeGrafo && grafos[i].vertice[j].valor == valorVertice )
 			{
 				return grafos[i].vertice[j];
+			}
+		}
+	}
+}
+
+function indiceVerticePorValor(grafo, valorVertice){
+	{
+		//for( var j=0; j < grafo.vertice.length; j++ )
+		for(j in grafo.vertice)
+		{
+			if( grafo.vertice[j].valor == valorVertice )
+			{
+				return j;
 			}
 		}
 	}
@@ -1127,4 +1144,19 @@ function testarValorAresta(novoValor){
 
 function selecionarGrafo(indice){
 	grafoSelecionado = grafos[indice];
+}
+
+function colorirGrafo(){
+	colorido = new Array();
+	coresVertices = new Array();
+	if(grafoSelecionado != null && noSelecionado != null){
+		colorir(grafoSelecionado, noSelecionado);
+	}
+	else{
+		return;
+	}
+	
+	for(i in coresVertices){
+		grafoSelecionado.vertice[i].cor = coresVertices[i];
+	}
 }
