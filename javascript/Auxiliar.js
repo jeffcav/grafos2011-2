@@ -25,10 +25,10 @@ function retornaCor(grafo, v){
 	/*Encontrar as cores dos vértices próximos e que estão ligados a ele*/
 	
 	/*Ligacoes que chegam*/
-	for(var i = 0; i < grafo.vertice.length; i++){
-		for(var j in vertice.aresta){
+	for(var i in grafo.vertice){
+		for(var j = 0; j < grafo.vertice[i].aresta.length; j++){
 			if(grafo.vertice[i].aresta[j].destino.valor == v.valor){
-				if(coresVertices[i] != 'undefined'){
+				if(coresVertices[i] != undefined){
 					coresUsadas.push(indiceCorPorValor(coresVertices[i]));
 				}
 			}
@@ -37,7 +37,7 @@ function retornaCor(grafo, v){
 	
 	/*ligacoes que saem*/
 	for(var i in v.aresta){
-		var indiceVerticeDestino = indiceVerticePorValor(grafo, v.aresta[i].valor);
+		var indiceVerticeDestino = indiceVerticePorValor(grafo, v.aresta[i].destino.valor);
 		if(coresVertices[indiceVerticeDestino] != undefined){
 			coresUsadas.push(indiceCorPorValor(coresVertices[indiceVerticeDestino]));
 		}
@@ -47,7 +47,7 @@ function retornaCor(grafo, v){
 	var corPodeSerUsada;
 	for(var i=0; i < cores.length; i++){
 		corPodeSerUsada = true;
-		for(var j=0; j<coresUsadas.length; j++){
+		for(var j=0; j<=coresUsadas.length; j++){
 			if(coresUsadas[j] == i)
 				corPodeSerUsada = false;
 		}
@@ -57,7 +57,7 @@ function retornaCor(grafo, v){
 		}
 	}
 	
-	return 'undefined';
+	return undefined;
 }
 
 function indiceCorPorValor(cor){
