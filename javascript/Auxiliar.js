@@ -4,9 +4,13 @@ function gerarCores(){
 			for(var b=0; b<=5; b++){
 				if(r != g && r != b && g != b){ //não é a maneira mais eficiente de se fazer essa verificação
 					var hex = "";
-					hex += parseInt(r).toString(16);
-					hex += parseInt(g).toString(16);
-					hex += parseInt(b).toString(16);
+					var r1 = parseInt(r*51).toString(16);
+					var g1 = parseInt(g*51).toString(16);
+					var b1 = parseInt(b*51).toString(16);
+					
+					hex += (r1.length < 2) ? "0" + r1 : r1;
+					hex += (g1.length < 2) ? "0" + g1 : g1;
+					hex += (b1.length < 2) ? "0" + b1 : b1;
 					
 					cores.push(hex);
 				}
