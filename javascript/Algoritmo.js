@@ -407,6 +407,19 @@ function caminhoMinimoDjikstra(grafo, node)
 	
 }
 
+function colorir(grafo, v){
+	var indiceNo = indiceVerticePorValor(grafo, v.valor);
+	if(colorido[indiceNo] != 1){
+		coresVertices[indiceNo] = retornaCor(grafo, v);
+		
+		colorido[indiceNo] = 1;
+		
+		for(var i in v.aresta){
+			colorir(grafo, v.aresta[i].destino);
+		}
+	}
+}
+
 
 function sleep( milliseconds ) 
 {
