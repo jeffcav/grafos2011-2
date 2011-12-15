@@ -31,8 +31,8 @@ var coresVertices = new Array();
 gerarCores();
 
 /* Constantes */
-const descontoMenu = 52;
-const descCanvasX = canvas.offsetLeft;
+const descontoMenu = -30; /* 22px da div infoNo + 8px da margem que foi retirada*/
+const descCanvasX = canvas.offsetLeft - 8; /*8px da margem que foi retirada*/
 const descCanvasY = canvas.offsetTop + descontoMenu;
 
 /* Escutas de eventos */
