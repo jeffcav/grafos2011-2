@@ -905,6 +905,18 @@ function onMouseUp(e)  // o ideal seria que o inserir vertices chamasse essa fun
 		break;
 	case acoes.selecionar:
 		estaMovendo = false;
+		if(ctrlPressionado == true){
+			var grafosEmpilhados = grafosSobMouse(e);
+			var ig;
+			if(grafosEmpilhados.length > 1){
+				for(ig=0; ig < grafos.length; ig++){
+					if(grafos[ig].nome != grafoSelecionado.nome){
+						break;
+					}
+				}
+				mesclarGrafo(grafoSelecionado, grafos[ig]);
+			}
+		}
 		
 		break;
 	
@@ -925,6 +937,23 @@ function grafoSobMouse(e){
 		}
 	}
 	return gSelecionado;
+}
+
+function grafosSobMouse(e){
+	var indice, ig;
+	var gSelecionados = new Array();
+	for(ig = 0; ig < grafos.length; ig++ ){
+		for( indice in grafos[ig].vertice )
+		{
+			if( Math.pow( (getMouseX(e)+xCanvas)/scale - grafos[ig].vertice[indice].x, 2) + Math.pow( (getMouseY(e)+yCanvas)/scale - grafos[ig].vertice[indice].y, 2) <= Math.pow(raio, 2) )
+			{
+				gSelecionados.push(grafos[ig]);
+				break;
+			}
+	
+		}
+	}
+	return gSelecionados;
 }
 
 function NoSobMouse(e){
@@ -1026,23 +1055,15 @@ function configBuscaLargura(e)
 }
 
 
-function mesclarGrafo(){
+function mesclarGrafo(g1, g2){
 
 	ocultarInfoNo();
-	var nome1 = window.prompt( "Digite o nome do primeiro grafo", "" );
-	var nome2 = window.prompt( "Digite o nome do segundo grafo", "" );
-	var grafo1;
-	var grafo2;
+	mesclar(g1, g2);
 	for(var ig = 0; ig < grafos.length; ig++){
-		if(grafos[ig].nome == nome1){
-			grafo1 = grafos[ig];
-		}
-		if(grafos[ig].nome == nome2){
-			grafo2 = grafos[ig];
+		if(grafos[ig].nome == g2.nome){
 			grafos.splice(ig, 1);
 		}
 	}
-	mesclar(grafo1, grafo2);
 	atualizarCanvas();	
 }
 
