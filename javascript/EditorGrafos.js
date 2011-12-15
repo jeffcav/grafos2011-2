@@ -14,7 +14,7 @@ var noSelecionado = null;
 var grafoSelecionado = null;
 var vertice = new Array();
 var grafos = new Array();
-var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10, "ordenacaoTopologica":11};
+var acoes = { "mover":0, "inserirVertice":1, "deletarVertice":2, "inserirAresta":3, "deletarAresta":4, "moverGrafo":5,  "deletarGrafo": 6, "deletarArestaIncompleto" : 7, "inserirArestaBi" : 8, "djikstra": 9, "selecionar":10, "ordenacaoTopologica":11, "bell":12};
 var padraoValorVertice = /[0-9]?[0-9]?[0-9]/;
 var noSelecionado = null;
 var grafoSelecionado = null;
@@ -565,6 +565,20 @@ function mouseClick( e )
 			noSelecionado = null;
 		}
 		break;
+	
+	case acoes.bell:
+		if(grafos.length > 0)
+		{
+			actGrafo = grafoSobMouse(e);
+			actNode = NoSobMouse(e);
+			if(actGrafo != -1 && actNode != null )
+			{
+				caminhoMinimoBellmanFord(actGrafo, actNode);
+				atualizarCanvas();
+			}
+			actNode = null;
+		}
+		break;
 		
 	case acoes.selecionar:
 		noSelecionado = NoSobMouse(e);
@@ -1060,6 +1074,12 @@ function configDjikstra(e)
 
 	ocultarInfoNo();
 	acao = acoes.djikstra;
+}
+
+function configBell(e)
+{
+	ocultarInfoNo();
+	acao = acoes.bell;
 }
 
 function testarValorVertice(novoValor){
