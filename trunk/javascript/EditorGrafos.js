@@ -252,7 +252,7 @@ function desenharVertice( corGrafo,  v )
 	contexto.textAlign = "center";
 	contexto.fillText( v.valor, v.x, v.y );
 	
-	if( typeof v.dist != 'undefined' )
+	if( v.dist != null )
 	{
 		contexto.fillStyle = "#8B2323";	
 		contexto.fillText( v.dist, v.x + 25, v.y - 25 );
@@ -281,9 +281,12 @@ function selecionar(){
 }
 
 function inserirVertice()
-{
+{	
 	ocultarInfoNo();
-	acao = acoes.inserirVertice;
+	if(grafos.length == 0)
+		window.alert("Crie um grafo antes de inserir um vertice!");
+	else
+		acao = acoes.inserirVertice;
 }
 
 function inserirAresta()
@@ -1076,16 +1079,21 @@ function configOrdenacaoTopologica(e)
 
 function configKruskal(e)
 {
-
 	ocultarInfoNo();
-	arvoreMinimaKruskal( grafoSelecionado );
+	if( grafoSelecionado == -1 )
+		window.alert("Nenhum grafo esta selecionado");
+	else
+		arvoreMinimaKruskal( grafoSelecionado );
 	atualizarCanvas();
 }
 
 function configPrim(e)
 {
 	ocultarInfoNo();
-	arvoreMinimaPrim( grafoSelecionado );
+	if( grafoSelecionado == -1 )
+		window.alert("Nenhum grafo esta selecionado");
+	else
+		arvoreMinimaPrim( grafoSelecionado );
 	atualizarCanvas();
 }
 
@@ -1094,12 +1102,14 @@ function configDjikstra(e)
 {
 
 	ocultarInfoNo();
+	window.alert("Clique no vertice inicial.");
 	acao = acoes.djikstra;
 }
 
 function configBell(e)
 {
 	ocultarInfoNo();
+	window.alert("Clique no vertice inicial.");
 	acao = acoes.bell;
 }
 
@@ -1201,5 +1211,22 @@ function colorirGrafo(){
 		grafoSelecionado.vertice[i].cor = coresVertices[i];
 	}
 	
+	atualizarCanvas();
+}
+
+function limparTudo()
+{
+	for(var i in grafos)
+	{
+		for(var j in grafos[i].vertice)
+		{
+			grafos[i].vertice[j].cor = "000000";
+			grafos[i].vertice[j].dist = null;
+			for(var k in grafos[i].vertice[j].aresta)
+			{
+				grafos[i].vertice[j].aresta[k].cor = "000000";
+			}
+		}
+	}
 	atualizarCanvas();
 }
