@@ -418,7 +418,7 @@ function salvarGrafo()
 		}
     }
 
-	window.open( "../downloadArquivo.php?download=1&nomeArquivo=" + nomeArquivo );	
+	window.open( "../lerGrafos.php?download=1&nomeArquivo=" + nomeArquivo );	
 }
 
 function lerGrafo()
@@ -434,7 +434,7 @@ function lerGrafo()
 
 	/* Abre conexão com servidor */
 	xmlhttp = new XMLHttpRequest(); 
-	xmlhttp.open( "GET", "../downloadArquivo.php?nomeArquivo=" + nomeArquivo + "&download=0", true );
+	xmlhttp.open( "GET", "../lerGrafos.php?nomeArquivo=" + nomeArquivo + "&download=0", true );
 	//xmlhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// Setando Content-type
 
 	xmlhttp.send();
