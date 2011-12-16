@@ -741,6 +741,7 @@ function onMouseDown( e )
 		estaMovendo = true;
 		noSelecionado = NoSobMouse(e);
 		grafoSelecionado = grafoSobMouse(e);
+		limparTudo();
 		if(ctrlPressionado == true){
 			iniX = (getMouseX(e)+xCanvas)/scale;
 			iniY = (getMouseY(e)+yCanvas)/scale;
