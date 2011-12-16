@@ -1,4 +1,5 @@
 function gerarCores(){
+	var coresAux = new Array();
 	for(var r=0; r<=5; r++){
 		for(var g=0; g<=5; g++){
 			for(var b=0; b<=5; b++){
@@ -12,11 +13,22 @@ function gerarCores(){
 					hex += (g1.length < 2) ? "0" + g1 : g1;
 					hex += (b1.length < 2) ? "0" + b1 : b1;
 					
-					cores.push(hex);
+					coresAux.push(hex);
 				}
 			}
 		}
 	}
+	
+	
+	/*Embaralhar as cores*/
+	var numeroDeCores = coresAux.length;
+	var iC, indiceRemov;
+	for(ic = 0; ic < numeroDeCores; ic++){
+		indiceRemov = Math.floor(Math.random()*(numeroDeCores+1));
+		cores.push(coresAux[indiceRemov]);
+		coresAux.splice(indiceRemov, 1);
+	}
+	
 }
 
 function retornaCor(grafo, v){
