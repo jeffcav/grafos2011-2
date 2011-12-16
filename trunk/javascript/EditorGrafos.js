@@ -1180,6 +1180,17 @@ function mudarValorAresta(indice){
 	else{
 		caixaNovoValor.style.background = "#FFFFFF";
 		noSelecionado.aresta[indice].valor = novoValor;
+		
+		if(noSelecionado.aresta[indice].direcionado == 0){ //se o grafo é bidirecionado
+			var arestasVoltando = noSelecionado.aresta[indice].destino.aresta;
+			var ia;
+			for(ia = 0; ia < arestasVoltando.length; ia++){
+				if(arestasVoltando[ia].destino.valor == noSelecionado.valor){
+					arestasVoltando[ia].valor = novoValor;
+				}
+			}
+		}
+		
 		atualizarCanvas();
 	}
 }
